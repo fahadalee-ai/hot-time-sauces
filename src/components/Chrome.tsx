@@ -1,7 +1,23 @@
 import { ChevronLeft, ShoppingBag } from "lucide-react";
 import { Link, useRouter } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { FLAT_SHIPPING, FREE_SHIPPING_THRESHOLD } from "@/data/config";
+import { money } from "@/lib/format";
 import { useApp } from "@/lib/store";
+
+export function ShippingNotice() {
+  const free = Number.isInteger(FREE_SHIPPING_THRESHOLD) ? `$${FREE_SHIPPING_THRESHOLD}` : money(FREE_SHIPPING_THRESHOLD);
+  return (
+    <div className="mx-4 rounded-2xl border border-white/10 bg-char px-4 py-3 text-center">
+      <p className="text-[15px] font-semibold leading-snug text-cream">
+        Flat rate USPS shipping starts at <span className="text-flame">{money(FLAT_SHIPPING)}</span> in the USA
+      </p>
+      <p className="mt-1 text-[15px] font-semibold leading-snug text-cream">
+        FREE shipping for orders starts at <span className="text-flame">{free}</span>
+      </p>
+    </div>
+  );
+}
 
 export function CartButton() {
   const { cartCount } = useApp();
@@ -18,15 +34,21 @@ export function CartButton() {
   );
 }
 
-export function BackBar({ title, action }: { title: string; action?: ReactNode }) {
+export function BackBar({ title, action, onBack }: { title: string; action?: ReactNode; onBack?: () => void }) {
   const router = useRouter();
   return (
-    <header className="sticky top-0 z-30 grid h-14 grid-cols-[44px_minmax(0,1fr)_44px] items-center border-b border-white/10 bg-ember/80 px-1 backdrop-blur-xl">
-      <button type="button" aria-label="Back" onClick={() => router.history.back()} className="press grid h-11 w-11 place-items-center text-flame">
-        <ChevronLeft className="h-6 w-6" />
+    <header className="sticky top-0 z-30 flex h-14 items-center border-b border-white/10 bg-ember/80 px-1 backdrop-blur-xl">
+      <button
+        type="button"
+        aria-label="Back"
+        onPointerDown={(event) => event.stopPropagation()}
+        onClick={() => (onBack ? onBack() : router.history.back())}
+        className="press relative z-20 ml-1 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-char text-flame"
+      >
+        <ChevronLeft className="h-7 w-7" strokeWidth={2.5} />
       </button>
-      <h1 className="truncate text-center font-display text-[1.65rem] leading-none text-cream">{title}</h1>
-      <div className="flex justify-end">{action}</div>
+      <h1 className="pointer-events-none absolute inset-x-16 truncate text-center font-display text-[1.7rem] leading-none text-cream">{title}</h1>
+      {action && <div className="relative z-10 ml-auto flex items-center">{action}</div>}
     </header>
   );
 }

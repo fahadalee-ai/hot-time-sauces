@@ -102,7 +102,7 @@ export function OnboardingScreen() {
           <ChevronLeft className="h-6 w-6" />
         </button>
       )}
-      <button type="button" onClick={finish} className="press absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-20 rounded-full bg-black/55 px-4 py-2 text-sm font-semibold text-white">
+      <button type="button" onClick={finish} className="capsule press absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-20 bg-black/55 text-white">
         Skip
       </button>
       <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-8 pt-28">
@@ -208,7 +208,7 @@ export function LoginScreen() {
       >
         <Field label="Email" type="email" autoComplete="email" value={email} onChange={setEmail} />
         <Field label="Password" type="password" autoComplete="current-password" value={password} onChange={setPassword} />
-        <button type="button" onClick={() => setForgot((v) => !v)} className="text-sm font-semibold text-flame">
+        <button type="button" onClick={() => setForgot((v) => !v)} className="inline-flex h-11 items-center text-sm font-semibold text-flame">
           Forgot Password
         </button>
         {forgot && (
@@ -216,7 +216,7 @@ export function LoginScreen() {
             Password reset emails are not connected in this demo. Accounts live on this device — use the password you created here.
           </p>
         )}
-        <FireButton type="submit" loading={loading}>
+        <FireButton className="!mt-8" type="submit" loading={loading}>
           Login
         </FireButton>
       </form>
@@ -235,7 +235,7 @@ export function LoginScreen() {
       </div>
       <button
         type="button"
-        className="mt-4 w-full text-center text-sm font-semibold text-flame"
+        className="mt-4 flex h-11 w-full items-center justify-center text-sm font-semibold text-flame"
         onClick={() => {
           continueAsGuest();
           navigate({ to: "/home" });
@@ -245,7 +245,7 @@ export function LoginScreen() {
       </button>
       <p className="mt-4 text-center text-sm text-ash">
         New here?{" "}
-        <button type="button" className="font-semibold text-flame" onClick={() => navigate({ to: "/register" })}>
+        <button type="button" className="inline-flex h-11 items-center font-semibold text-flame" onClick={() => navigate({ to: "/register" })}>
           Register
         </button>
       </p>
@@ -290,21 +290,21 @@ export function RegisterScreen() {
         <Field label="Phone (optional)" type="tel" autoComplete="tel" value={form.phone} onChange={(value) => set("phone", value)} />
         <Field label="Password" type="password" autoComplete="new-password" value={form.password} onChange={(value) => set("password", value)} />
         <Field label="Confirm Password" type="password" autoComplete="new-password" value={form.confirm} onChange={(value) => set("confirm", value)} />
-        <label className="flex items-start gap-3 text-sm text-cream">
-          <input type="checkbox" checked={form.terms} onChange={(event) => set("terms", event.target.checked)} className="mt-1 h-5 w-5 accent-[#e1261c]" />
+        <label className="flex min-h-11 items-center gap-3 text-sm text-cream">
+          <input type="checkbox" checked={form.terms} onChange={(event) => set("terms", event.target.checked)} className="h-6 w-6 shrink-0 accent-[#e1261c]" />
           I agree to the Terms and Privacy Policy.
         </label>
-        <label className="flex items-start gap-3 text-sm text-ash">
-          <input type="checkbox" checked={form.deals} onChange={(event) => set("deals", event.target.checked)} className="mt-1 h-5 w-5 accent-[#ff8900]" />
+        <label className="flex min-h-11 items-center gap-3 text-sm text-ash">
+          <input type="checkbox" checked={form.deals} onChange={(event) => set("deals", event.target.checked)} className="h-6 w-6 shrink-0 accent-[#ff8900]" />
           Send me deals and new sauce drops.
         </label>
-        <FireButton type="submit" loading={loading}>
+        <FireButton className="!mt-8" type="submit" loading={loading}>
           Create Account
         </FireButton>
       </form>
       <p className="mt-4 text-center text-sm text-ash">
         Already have an account?{" "}
-        <button type="button" className="font-semibold text-flame" onClick={() => navigate({ to: "/login" })}>
+        <button type="button" className="inline-flex h-11 items-center font-semibold text-flame" onClick={() => navigate({ to: "/login" })}>
           Login
         </button>
       </p>

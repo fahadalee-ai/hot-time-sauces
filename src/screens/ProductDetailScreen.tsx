@@ -33,7 +33,7 @@ export function ProductDetailScreen({ handle }: { handle: string }) {
     return (
       <div>
         <BackBar title="Missing" />
-        <p className="px-4 text-sm text-ash">That sauce isn't in the catalog.</p>
+        <p className="px-4 pt-6 text-sm text-ash">That sauce isn't in the catalog.</p>
       </div>
     );
   }
@@ -83,9 +83,18 @@ export function ProductDetailScreen({ handle }: { handle: string }) {
           </div>
         ))}
       </div>
-      <div className="mt-2 flex justify-center gap-1.5">
+      <div className="flex justify-center">
         {product.images.map((src, dot) => (
-          <span key={src} className={`h-1.5 rounded-full ${dot === index ? "nav-glow w-5" : "w-1.5 bg-smoke"}`} />
+          <button
+            key={src}
+            type="button"
+            aria-label={`Photo ${dot + 1}`}
+            aria-current={dot === index ? "true" : undefined}
+            onClick={() => scroller.current?.scrollTo({ left: dot * scroller.current.clientWidth, behavior: "smooth" })}
+            className="grid h-11 w-11 place-items-center"
+          >
+            <span className={`block h-2 rounded-full ${dot === index ? "nav-glow w-7" : "w-2 bg-smoke"}`} />
+          </button>
         ))}
       </div>
       <div className="px-4 pt-4">
@@ -105,7 +114,7 @@ export function ProductDetailScreen({ handle }: { handle: string }) {
               <span className="text-sm text-ash">{heatLabel(product.heatLevel)}</span>
             </>
           ) : (
-            <span className="rounded-full bg-char px-3 py-1 text-xs font-semibold uppercase text-flame">{flavorTag(product)}</span>
+            <span className="capsule bg-char text-flame">{flavorTag(product)}</span>
           )}
         </div>
         <div className="mt-3 flex items-end gap-2">
@@ -185,7 +194,7 @@ export function ProductDetailScreen({ handle }: { handle: string }) {
       )}
       {phone &&
         createPortal(
-          <div className="absolute inset-x-0 bottom-0 z-40 border-t border-white/10 bg-ember/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-xl">
+          <div className="absolute inset-x-0 bottom-0 z-40 border-t border-white/10 bg-ember/90 px-3 pt-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-xl">
             <div className="flex gap-2">
               {product.available ? (
                 <>

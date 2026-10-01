@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { BookOpen, Flame, Gift, Heart, Info, Search, Thermometer } from "lucide-react";
 import { useMemo, useState } from "react";
-import { CartButton, SectionTitle } from "@/components/Chrome";
+import { CartButton, SectionTitle, ShippingNotice } from "@/components/Chrome";
 import { HeatMeter } from "@/components/HeatMeter";
 import { ProductCard } from "@/components/ProductCard";
 import { SauceImage } from "@/components/SauceImage";
@@ -14,7 +14,6 @@ import {
   salePicks,
   searchProducts,
   shelfCount,
-  site,
 } from "@/lib/catalog";
 
 const AISLES: NavItem[] = [
@@ -37,7 +36,7 @@ function AisleCard({ item, onOpen }: { item: NavItem; onOpen: (item: NavItem) =>
       <SauceImage src={coverFor(item.handle)} alt="" className="aspect-[4/3]" />
       <div className="px-3 py-2.5">
         <p className="font-display text-[1.65rem] leading-none text-cream">{item.label}</p>
-        <p className="mt-1 text-[11px] font-medium text-ash">{count} {count === 1 ? "sauce" : "sauces"}</p>
+        <p className="mt-1 text-[13px] font-medium text-ash">{count} {count === 1 ? "sauce" : "sauces"}</p>
       </div>
     </button>
   );
@@ -83,7 +82,7 @@ export function ShopScreen() {
 
   return (
     <div className="pb-6">
-      <header className="px-4 pb-3 pt-[max(0.8rem,env(safe-area-inset-top))]">
+      <header className="px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))]">
         <div className="flex items-center gap-3">
           <h1 className="font-display flex-1 text-4xl">Shop</h1>
           <CartButton />
@@ -127,9 +126,7 @@ export function ShopScreen() {
         </div>
       ) : (
         <>
-          <p className="mx-4 rounded-2xl bg-gradient-to-r from-fire/90 to-flame px-3 py-2 text-center text-[11px] font-semibold leading-snug text-white">
-            {site.announcement}
-          </p>
+          <ShippingNotice />
 
           {featured && (
             <button
@@ -139,7 +136,7 @@ export function ShopScreen() {
             >
               <SauceImage src={featured.images[0]} alt="" className="h-28 w-24 shrink-0 rounded-2xl" />
               <span className="min-w-0">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-flame">On the shelf</span>
+                <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-flame">On the shelf</span>
                 <span className="mt-1 block font-display text-4xl text-cream">Start with a best seller</span>
                 <span className="mt-1 block line-clamp-2 text-sm text-ash">{featured.title}</span>
               </span>
@@ -161,7 +158,7 @@ export function ShopScreen() {
                     <div className="p-3">
                       <p className="font-display text-3xl text-cream">{card.label}</p>
                       <HeatMeter score={card.score} />
-                      <p className="mt-1 text-[11px] text-ash">{shelfCount(card.handle)} sauces</p>
+                      <p className="mt-1 text-[13px] text-ash">{shelfCount(card.handle)} sauces</p>
                     </div>
                   </div>
                 </button>
@@ -182,7 +179,7 @@ export function ShopScreen() {
             <SectionTitle
               title="Best Sellers"
               action={
-                <button type="button" className="text-sm font-semibold text-flame" onClick={() => navigate({ to: "/c/$handle", params: { handle: "best-sellers" } })}>
+                <button type="button" className="inline-flex h-11 items-center px-2 text-sm font-semibold text-flame" onClick={() => navigate({ to: "/c/$handle", params: { handle: "best-sellers" } })}>
                   See all
                 </button>
               }
@@ -198,7 +195,7 @@ export function ShopScreen() {
             <SectionTitle
               title="On Sale"
               action={
-                <button type="button" className="text-sm font-semibold text-flame" onClick={() => navigate({ to: "/c/$handle", params: { handle: "on-sale" } })}>
+                <button type="button" className="inline-flex h-11 items-center px-2 text-sm font-semibold text-flame" onClick={() => navigate({ to: "/c/$handle", params: { handle: "on-sale" } })}>
                   All sale
                 </button>
               }
@@ -222,7 +219,7 @@ export function ShopScreen() {
                   <SauceImage src={coverFor(item.handle)} alt="" className="h-16 w-16 shrink-0 rounded-2xl" />
                   <span>
                     <span className="block font-display text-2xl leading-none text-cream">{item.label}</span>
-                    <span className="mt-1 block text-[11px] text-ash">{shelfCount(item.handle)} sauces</span>
+                    <span className="mt-1 block text-[13px] text-ash">{shelfCount(item.handle)} sauces</span>
                   </span>
                 </button>
               ))}
@@ -233,7 +230,7 @@ export function ShopScreen() {
             <SectionTitle
               title="Brands"
               action={
-                <button type="button" className="text-sm font-semibold text-flame" onClick={() => navigate({ to: "/brands" })}>
+                <button type="button" className="inline-flex h-11 items-center px-2 text-sm font-semibold text-flame" onClick={() => navigate({ to: "/brands" })}>
                   All brands
                 </button>
               }
@@ -251,7 +248,7 @@ export function ShopScreen() {
                     <SauceImage src={cover} alt="" className="aspect-square" />
                     <span className="block px-3 py-2">
                       <span className="line-clamp-2 text-sm font-semibold text-cream">{brand.name}</span>
-                      <span className="text-[11px] text-ash">{brand.count} sauces</span>
+                      <span className="text-[13px] text-ash">{brand.count} sauces</span>
                     </span>
                   </button>
                 );

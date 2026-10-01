@@ -2,10 +2,11 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import successArt from "@/img/generated/order-success.webp";
 import { FlameBackground } from "@/components/effects";
+import { BackBar } from "@/components/Chrome";
 import { FireButton } from "@/components/FireButton";
 import { FLAT_SHIPPING, FREE_SHIPPING_THRESHOLD, PRIORITY_SHIPPING } from "@/data/config";
 import { getProduct } from "@/lib/catalog";
-import { addBusinessDays, eligibleShippingSubtotal, formatDay, luhn, money, shippingQuote, US_STATES } from "@/lib/format";
+import { addBusinessDays, eligibleShippingSubtotal, formatAddress, formatDay, money, shippingQuote, US_STATES } from "@/lib/format";
 import { useApp, type Address, type Order } from "@/lib/store";
 
 const STEPS = ["Address", "Shipping", "Payment", "Review"];
@@ -50,7 +51,6 @@ export function CheckoutScreen() {
   const app = useApp();
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<Draft>(blankDraft);
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [placing, setPlacing] = useState(false);
   const [ready, setReady] = useState(false);
@@ -115,35 +115,9 @@ export function CheckoutScreen() {
 
   const setAddress = (patch: Partial<Address>) => setDraft((current) => ({ ...current, address: { ...current.address, ...patch } }));
 
-  const nextAddress = () => {
-    const a = draft.address;
-    const next: Record<string, string> = {};
-    if (a.name.trim().length < 2) next.name = "Enter the full name.";
-    if (!/^\S+@\S+\.\S+$/.test(a.email)) next.email = "Enter a valid email.";
-    if (a.phone.replace(/\D/g, "").length < 10) next.phone = "Enter a phone number.";
-    if (a.line1.trim().length < 4) next.line1 = "Enter the street address.";
-    if (a.city.trim().length < 2) next.city = "Enter the city.";
-    if (!/^\d{5}(-\d{4})?$/.test(a.zip)) next.zip = "Enter a 5-digit ZIP.";
-    setErrors(next);
-    if (Object.keys(next).length) return;
-    setStep(1);
-  };
+  const nextAddress = () => setStep(1);
 
-  const nextPayment = () => {
-    const next: Record<string, string> = {};
-    const digits = draft.cardNumber.replace(/\D/g, "");
-    if (draft.cardName.trim().length < 2) next.cardName = "Name on card is required.";
-    if (!luhn(digits)) next.cardNumber = "Enter a valid card number.";
-    const match = draft.expiry.match(/^(\d{2})\/(\d{2})$/);
-    const month = Number(match?.[1]);
-    const year = Number(match?.[2]);
-    const expired = !match || month < 1 || month > 12 || year < 26 || (year === 26 && month < 10);
-    if (expired) next.expiry = "Use a future date as MM/YY.";
-    if (!/^\d{3,4}$/.test(draft.cvv)) next.cvv = "Enter the CVV.";
-    setErrors(next);
-    if (Object.keys(next).length) return;
-    setStep(3);
-  };
+  const nextPayment = () => setStep(3);
 
   const place = async () => {
     setPlacing(true);
@@ -176,52 +150,61 @@ export function CheckoutScreen() {
 
   if (app.hydrated && lines.length === 0) {
     return (
-      <div className="px-4 pt-16 text-center">
-        <h1 className="font-display text-4xl">Cart is empty</h1>
-        <Link to="/shop" className="mt-4 inline-block text-flame">
-          Continue shopping
-        </Link>
+      <div>
+        <BackBar title="Checkout" onBack={() => navigate({ to: "/cart" })} />
+        <div className="px-4 pt-10 text-center">
+          <h1 className="font-display text-4xl">Cart is empty</h1>
+          <Link to="/shop" className="mt-4 inline-block text-flame">
+            Continue shopping
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="px-4 pb-8 pt-[max(0.8rem,env(safe-area-inset-top))]">
-      <div className="mb-4 flex items-center gap-2">
-        <button type="button" onClick={() => (step === 0 ? navigate({ to: "/cart" }) : setStep(step - 1))} className="text-sm text-flame">
-          Back
-        </button>
-        <h1 className="font-display text-3xl">Checkout</h1>
-      </div>
-      <ol className="mb-4 grid grid-cols-4 gap-1">
-        {STEPS.map((label, index) => (
-          <li key={label}>
-            <button type="button" disabled={index > step} onClick={() => index < step && setStep(index)} className="w-full text-left">
-              <span className={`block h-1.5 rounded-full ${index <= step ? "nav-glow" : "bg-smoke"}`} />
-              <span className={`mt-1 block text-[10px] ${index === step ? "text-flame" : "text-ash"}`}>{label}</span>
-            </button>
-          </li>
-        ))}
+    <div className="pb-8">
+      <BackBar title="Checkout" onBack={() => (step === 0 ? navigate({ to: "/cart" }) : setStep(step - 1))} />
+      <ol aria-label="Checkout steps" className="grid grid-cols-4 border-b border-white/10">
+        {STEPS.map((label, index) => {
+          const current = index === step;
+          const done = index < step;
+          return (
+            <li key={label}>
+              <button
+                type="button"
+                aria-current={current ? "step" : undefined}
+                aria-disabled={index > step}
+                onClick={() => done && setStep(index)}
+                className="relative flex h-11 w-full items-center justify-center px-1"
+              >
+                <span className={`truncate text-[13px] font-semibold ${current ? "text-flame" : done ? "text-cream" : "text-ash"}`}>{label}</span>
+                <span className={`absolute inset-x-3 bottom-0 h-0.5 rounded-full ${current ? "bg-flame" : done ? "bg-flame/50" : ""}`} />
+              </button>
+            </li>
+          );
+        })}
       </ol>
+      <div className="px-4 pt-4">
       {summary}
       {step === 0 && (
         <div className="space-y-3">
           {app.addresses.length > 0 && (
             <div className="flex gap-2 overflow-x-auto">
               {app.addresses.map((address) => (
-                <button key={address.id} type="button" onClick={() => setDraft((current) => ({ ...current, address }))} className="press shrink-0 rounded-2xl border border-smoke px-3 py-2 text-left text-xs">
+                <button key={address.id} type="button" onClick={() => setDraft((current) => ({ ...current, address }))} className="capsule press shrink-0 border border-smoke bg-char text-left text-cream">
                   <span className="block font-semibold text-cream">{address.name}</span>
                   {address.line1}
                 </button>
               ))}
             </div>
           )}
-          <Input label="Full name" value={draft.address.name} error={errors.name} onChange={(name) => setAddress({ name })} />
-          <Input label="Email" value={draft.address.email} error={errors.email} onChange={(email) => setAddress({ email })} />
-          <Input label="Phone" value={draft.address.phone} error={errors.phone} onChange={(phone) => setAddress({ phone })} />
-          <Input label="Address line 1" value={draft.address.line1} error={errors.line1} onChange={(line1) => setAddress({ line1 })} />
+          <Input label="Full name" value={draft.address.name} onChange={(name) => setAddress({ name })} />
+          <Input label="Email" value={draft.address.email} onChange={(email) => setAddress({ email })} />
+          <Input label="Phone" value={draft.address.phone} onChange={(phone) => setAddress({ phone })} />
+          <Input label="Address line 1" value={draft.address.line1} onChange={(line1) => setAddress({ line1 })} />
           <Input label="Address line 2" value={draft.address.line2} onChange={(line2) => setAddress({ line2 })} />
-          <Input label="City" value={draft.address.city} error={errors.city} onChange={(city) => setAddress({ city })} />
+          <Input label="City" value={draft.address.city} onChange={(city) => setAddress({ city })} />
           <label className="block text-xs uppercase tracking-wide text-ash">
             State
             <select aria-label="State" value={draft.address.state} onChange={(event) => setAddress({ state: event.target.value })} className="field mt-1">
@@ -230,20 +213,20 @@ export function CheckoutScreen() {
               ))}
             </select>
           </label>
-          <Input label="ZIP" value={draft.address.zip} error={errors.zip} onChange={(zip) => setAddress({ zip })} />
+          <Input label="ZIP" value={draft.address.zip} onChange={(zip) => setAddress({ zip })} />
           <label className="block text-xs uppercase tracking-wide text-ash">
             Country
             <input className="field mt-1" value="United States" readOnly aria-label="Country" />
           </label>
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={draft.saveIt} onChange={(event) => setDraft({ ...draft, saveIt: event.target.checked })} className="h-5 w-5 accent-[#e1261c]" />
+          <label className="flex min-h-11 items-center gap-3 text-sm">
+            <input type="checkbox" checked={draft.saveIt} onChange={(event) => setDraft({ ...draft, saveIt: event.target.checked })} className="h-6 w-6 accent-[#e1261c]" />
             Save this address
           </label>
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={draft.sameBilling} onChange={(event) => setDraft({ ...draft, sameBilling: event.target.checked })} className="h-5 w-5 accent-[#ff8900]" />
+          <label className="flex min-h-11 items-center gap-3 text-sm">
+            <input type="checkbox" checked={draft.sameBilling} onChange={(event) => setDraft({ ...draft, sameBilling: event.target.checked })} className="h-6 w-6 accent-[#ff8900]" />
             Billing address is the same
           </label>
-          <FireButton onClick={nextAddress}>Continue</FireButton>
+          <FireButton className="!mt-8" onClick={nextAddress}>Continue</FireButton>
         </div>
       )}
       {step === 1 && (
@@ -263,18 +246,17 @@ export function CheckoutScreen() {
           <p className="text-xs leading-relaxed text-ash">
             Standard 5 oz orders ship free at ${FREE_SHIPPING_THRESHOLD}. Larger bottles use an $80 bar on the website. Package deals do not qualify, and a percent-off code returns shipping to the flat rate.
           </p>
-          <FireButton onClick={() => setStep(2)}>Continue</FireButton>
+          <FireButton className="!mt-8" onClick={() => setStep(2)}>Continue</FireButton>
         </div>
       )}
       {step === 2 && (
         <div className="space-y-3">
           {/* TODO: Replace this mock payment form with the Shopify Storefront API Checkout
               (cartCreate → cartBuyerIdentityUpdate → checkoutUrl) so orders are paid on hottimesauces.com. */}
-          <Input label="Name on card" value={draft.cardName} error={errors.cardName} onChange={(cardName) => setDraft({ ...draft, cardName })} />
+          <Input label="Name on card" value={draft.cardName} onChange={(cardName) => setDraft({ ...draft, cardName })} />
           <Input
             label="Card number"
             value={draft.cardNumber}
-            error={errors.cardNumber}
             onChange={(cardNumber) =>
               setDraft({
                 ...draft,
@@ -290,13 +272,12 @@ export function CheckoutScreen() {
             <Input
               label="Expiry"
               value={draft.expiry}
-              error={errors.expiry}
               onChange={(expiry) => {
                 const digits = expiry.replace(/\D/g, "").slice(0, 4);
                 setDraft({ ...draft, expiry: digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits });
               }}
             />
-            <Input label="CVV" value={draft.cvv} error={errors.cvv} onChange={(cvv) => setDraft({ ...draft, cvv: cvv.replace(/\D/g, "").slice(0, 4) })} />
+            <Input label="CVV" value={draft.cvv} onChange={(cvv) => setDraft({ ...draft, cvv: cvv.replace(/\D/g, "").slice(0, 4) })} />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <button type="button" className="press h-12 rounded-2xl border border-smoke text-sm font-semibold" onClick={() => app.pushToast("Apple Pay isn't connected in this demo.")}>
@@ -306,21 +287,22 @@ export function CheckoutScreen() {
               Google Pay
             </button>
           </div>
-          <p className="text-xs text-ash">Secure checkout UI only. No card is charged. Visa, Mastercard, Amex, and Discover badges are shown for the real store.</p>
-          <div className="flex gap-2 text-[10px] font-bold uppercase tracking-wide text-ash">
-            <span className="rounded-full border border-smoke px-2 py-1">Visa</span>
-            <span className="rounded-full border border-smoke px-2 py-1">Mastercard</span>
-            <span className="rounded-full border border-smoke px-2 py-1">Amex</span>
-            <span className="rounded-full border border-smoke px-2 py-1">Discover</span>
-          </div>
-          <FireButton onClick={nextPayment}>Review Order</FireButton>
+          <p className="text-xs text-ash">Secure checkout UI only. No card is charged. Visa, Mastercard, Amex, and Discover are shown for the real store.</p>
+          <ul className="grid grid-cols-2 gap-2" aria-label="Cards accepted">
+            {["Visa", "Mastercard", "Amex", "Discover"].map((brand) => (
+              <li key={brand} className="capsule w-full border border-smoke bg-char text-cream">
+                {brand}
+              </li>
+            ))}
+          </ul>
+          <FireButton className="!mt-8" onClick={nextPayment}>Review Order</FireButton>
         </div>
       )}
       {step === 3 && (
         <div className="space-y-3 text-sm">
-          <Block title="Ship to" body={`${draft.address.name}\n${draft.address.line1} ${draft.address.line2}\n${draft.address.city}, ${draft.address.state} ${draft.address.zip}\n${draft.address.email}`} />
+          <Block title="Ship to" body={[draft.address.name, formatAddress(draft.address), draft.address.email].map((part) => part.trim()).filter(Boolean).join("\n")} />
           <Block title="Shipping" body={`${quote.label} · ${quote.cost === 0 ? "FREE" : money(quote.cost)}`} />
-          <Block title="Payment" body={`${draft.cardName} · •••• ${draft.cardNumber.replace(/\D/g, "").slice(-4)}\n${draft.sameBilling ? "Billing matches shipping" : "Billing address collected at the store"}`} />
+          <Block title="Payment" body={[draft.cardName.trim(), draft.cardNumber.replace(/\D/g, "").slice(-4) ? `•••• ${draft.cardNumber.replace(/\D/g, "").slice(-4)}` : "", draft.sameBilling ? "Billing matches shipping" : "Billing address collected at the store"].filter(Boolean).join("\n")} />
           <div className="rounded-[20px] bg-char p-4">
             <Row k="Subtotal" v={money(app.subtotal)} />
             {app.discount > 0 && <Row k="Promo" v={`−${money(app.discount)}`} />}
@@ -328,21 +310,21 @@ export function CheckoutScreen() {
             <Row k="Tax" v="Calculated at checkout" />
             <Row k="Total" v={money(total)} />
           </div>
-          <FireButton loading={placing} onClick={() => void place()}>
+          <FireButton className="!mt-8" loading={placing} onClick={() => void place()}>
             Place Order
           </FireButton>
         </div>
       )}
+      </div>
     </div>
   );
 }
 
-function Input({ label, value, onChange, error }: { label: string; value: string; onChange: (value: string) => void; error?: string }) {
+function Input({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   return (
     <label className="block text-xs uppercase tracking-wide text-ash">
       {label}
       <input className="field mt-1 normal-case" value={value} aria-label={label} onChange={(event) => onChange(event.target.value)} />
-      {error && <span className="mt-1 block text-fire">{error}</span>}
     </label>
   );
 }
@@ -375,16 +357,15 @@ function Row({ k, v }: { k: string; v: string }) {
 }
 
 export function OrderSuccessScreen({ id }: { id: string }) {
+  const navigate = useNavigate();
   const { orders, hydrated } = useApp();
   const order = useMemo(() => orders.find((item) => item.id === id), [orders, id]);
   if (!hydrated) return <div className="shimmer m-4 h-64 rounded-[20px]" />;
   if (!order) {
     return (
-      <div className="px-4 pt-16 text-center">
-        <h1 className="font-display text-4xl">Order not found</h1>
-        <Link to="/home" className="mt-3 inline-block text-flame">
-          Back home
-        </Link>
+      <div>
+        <BackBar title="Order" onBack={() => navigate({ to: "/home" })} />
+        <p className="px-4 pt-6 text-center text-sm text-ash">We couldn't find that order on this device.</p>
       </div>
     );
   }
@@ -415,7 +396,7 @@ function SuccessBody({ order }: { order: Order }) {
           <span className="text-flame">{money(order.total)}</span>
         </p>
       </div>
-      <div className="relative mt-5 space-y-3">
+      <div className="relative mt-8 space-y-3">
         <Link to="/account/orders/$id" params={{ id: order.id }} className="fire-btn">
           Track Order
         </Link>

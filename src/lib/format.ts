@@ -4,6 +4,14 @@ export function money(value: number) {
   return value.toLocaleString("en-US", { style: "currency", currency: "USD" });
 }
 
+/** Joins only the address parts that were filled in, so empty fields don't leave a leading comma. */
+export function formatAddress(address: { line1?: string; line2?: string; city?: string; state?: string; zip?: string }) {
+  const street = [address.line1, address.line2].map((part) => part?.trim()).filter(Boolean).join(", ");
+  const region = [address.state, address.zip].map((part) => part?.trim()).filter(Boolean).join(" ");
+  const city = [address.city?.trim(), region].filter(Boolean).join(", ");
+  return [street, city].filter(Boolean).join(", ");
+}
+
 export function imageUrl(src: string | undefined, width: number) {
   if (!src) return "";
   try {

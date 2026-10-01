@@ -85,7 +85,7 @@ export function ProductListScreen({ handle, brand }: { handle?: string; brand?: 
   return (
     <div>
       <BackBar title={title} />
-      <div className="sticky top-14 z-20 flex items-center justify-between gap-2 border-b border-white/10 bg-ember/80 px-4 py-2 backdrop-blur-xl">
+      <div className="sticky top-14 z-20 flex items-center justify-between gap-3 border-b border-white/10 bg-ember/80 px-4 py-3 backdrop-blur-xl">
         <p className="text-xs text-ash">{results.length} sauces</p>
         <div className="flex gap-2">
           <button type="button" onClick={() => setSortOpen(true)} className="press h-11 rounded-full border border-smoke px-4 text-sm">
@@ -99,7 +99,7 @@ export function ProductListScreen({ handle, brand }: { handle?: string; brand?: 
       {results.length === 0 ? (
         <EmptyState image={emptyCart} title="No heat here" body="Nothing matches these filters. Widen the search and try again." />
       ) : (
-        <div className="grid grid-cols-2 gap-3 px-4 pb-6">
+        <div className="grid grid-cols-2 gap-3 px-4 pb-6 pt-4">
           {results.slice(0, visible).map((product) => (
             <ProductCard key={product.handle} product={product} />
           ))}
@@ -176,7 +176,7 @@ function FilterSheet({ filters, onChange, onClose }: { filters: Filters; onChang
           );
         })}
       </div>
-      <div className="mt-5 grid grid-cols-2 gap-2">
+      <div className="mt-8 grid grid-cols-2 gap-2">
         <button type="button" onClick={() => onChange(DEFAULT_FILTERS)} className="h-[52px] rounded-2xl border border-smoke font-semibold">
           Reset
         </button>
@@ -197,7 +197,7 @@ export function SearchScreen() {
   return (
     <div>
       <BackBar title="Search" />
-      <label className="mx-4 flex h-11 items-center gap-2 rounded-xl border border-smoke bg-char px-3">
+      <label className="mx-4 mt-3 flex h-11 items-center gap-2 rounded-xl border border-smoke bg-char px-3">
         <Search className="h-4 w-4 text-ash" />
         <input
           autoFocus

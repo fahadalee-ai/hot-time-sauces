@@ -78,7 +78,12 @@ export function AppShell({ children }: { children: ReactNode }) {
     let tracking = false;
     const down = (event: PointerEvent) => {
       const rect = phone.getBoundingClientRect();
-      if (event.clientX - rect.left > 28 || ROOTS.has(path)) {
+      const target = event.target;
+      if (
+        event.clientX - rect.left > 28 ||
+        ROOTS.has(path) ||
+        (target instanceof Element && target.closest("button, a, input, select, textarea, label"))
+      ) {
         tracking = false;
         return;
       }
@@ -102,13 +107,29 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [path, router]);
 
   useEffect(() => {
+    const reset = () => {
+      const scroller = phoneRef.current?.querySelector(".phone-scroll");
+      if (scroller instanceof HTMLElement) scroller.scrollTop = 0;
+      window.scrollTo(0, 0);
+    };
+    reset();
+    const frame = requestAnimationFrame(reset);
+    return () => cancelAnimationFrame(frame);
+  }, [path]);
+
+  useEffect(() => {
     const onFocus = (event: FocusEvent) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
       if (!phoneRef.current?.contains(target)) return;
       if (!["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      window.setTimeout(() => target.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" }), 280);
+      window.setTimeout(() => {
+        const box = target.getBoundingClientRect();
+        const scroller = phoneRef.current?.querySelector(".phone-scroll");
+        const limit = scroller instanceof HTMLElement ? scroller.getBoundingClientRect().bottom - 24 : window.innerHeight;
+        if (box.top < 8 || box.bottom > limit) target.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+      }, 280);
     };
     document.addEventListener("focusin", onFocus);
     return () => document.removeEventListener("focusin", onFocus);
@@ -125,7 +146,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </linearGradient>
           </defs>
         </svg>
-        <div className={`phone-scroll ${nav ? "pb-24" : ""}`}>
+        <div className={`phone-scroll ${nav ? "has-tabs" : ""}`}>
           <div key={path} className="screen-in min-h-full">
             {children}
           </div>
@@ -141,7 +162,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <Link
                       to={tab.to}
                       aria-current={active ? "page" : undefined}
-                      className={`press flex h-12 flex-col items-center justify-center gap-0.5 text-[10px] font-medium ${active ? "text-flame" : "text-ash"}`}
+                      className={`press flex h-[49px] flex-col items-center justify-center gap-0.5 text-[10px] font-medium leading-none ${active ? "text-flame" : "text-ash"}`}
                     >
                       <span className={`${tab.to === "/cart" ? "cart-beacon" : ""} relative grid h-6 w-10 place-items-center`}>
                         <Icon className="h-[22px] w-[22px]" strokeWidth={active ? 2.4 : 1.8} />

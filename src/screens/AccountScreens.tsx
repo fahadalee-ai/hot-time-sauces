@@ -6,7 +6,7 @@ import { ActionSheet, BackBar } from "@/components/Chrome";
 import { SauceImage } from "@/components/SauceImage";
 import { SUPPORT_EMAIL, SUPPORT_PHONE } from "@/data/config";
 import { coverFor } from "@/lib/catalog";
-import { imageUrl, money } from "@/lib/format";
+import { formatAddress, imageUrl, money } from "@/lib/format";
 import { useApp, type Address, type Order } from "@/lib/store";
 
 const GROUPS: { title: string; items: { label: string; hint: string; to: "/account/orders" | "/account/addresses" | "/wishlist" | "/gifts" | "/shu" | "/blog" | "/faq" | "/contact" | "/about" | "/privacy" | "/returns"; icon: ComponentType<{ className?: string }> }[] }[] = [
@@ -113,7 +113,7 @@ export function AccountScreen() {
         {stats.map((stat) => (
           <Link key={stat.label} to={stat.to} className="sauce-card press px-2 py-3 text-center">
             <p className="font-display text-3xl text-flame">{stat.value}</p>
-            <p className="text-[11px] font-medium text-ash">{stat.label}</p>
+            <p className="text-[13px] font-medium text-ash">{stat.label}</p>
           </Link>
         ))}
       </div>
@@ -122,7 +122,7 @@ export function AccountScreen() {
         <Link to="/account/orders/$id" params={{ id: latest.id }} className="sauce-card press mx-4 mt-3 flex items-center gap-3 p-3">
           <SauceImage src={latest.items[0]?.image} alt="" className="h-16 w-16 shrink-0 rounded-2xl" />
           <span className="min-w-0 flex-1">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-flame">Latest order</span>
+            <span className="text-[13px] font-semibold uppercase tracking-[0.12em] text-flame">Latest order</span>
             <span className="mt-0.5 block truncate text-sm font-semibold text-cream">{latest.number}</span>
             <span className="text-xs capitalize text-ash">{latest.status} · {money(latest.total)}</span>
           </span>
@@ -130,7 +130,7 @@ export function AccountScreen() {
         </Link>
       ) : (
         <button type="button" onClick={() => navigate({ to: "/shop" })} className="sauce-card press mx-4 mt-3 block w-[calc(100%-2rem)] p-4 text-left">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-flame">No orders yet</p>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-flame">No orders yet</p>
           <p className="font-display text-3xl text-cream">Find your first bottle</p>
         </button>
       )}
@@ -167,7 +167,7 @@ export function AccountScreen() {
       </p>
 
       {(user || guest) && (
-        <div className="px-4 pt-4">
+        <div className="px-4 pt-8">
           <button
             type="button"
             className="press flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-smoke text-sm font-semibold text-cream"
@@ -204,9 +204,9 @@ export function OrdersScreen() {
     <div>
       <BackBar title="My Orders" />
       {orders.length === 0 ? (
-        <p className="px-4 text-sm text-ash">No orders yet. Your first bottle is waiting.</p>
+        <p className="px-4 pt-6 text-sm text-ash">No orders yet. Your first bottle is waiting.</p>
       ) : (
-        <ul className="space-y-3 px-4">
+        <ul className="space-y-3 px-4 pt-4">
           {orders.map((order) => (
             <li key={order.id}>
               <Link to="/account/orders/$id" params={{ id: order.id }} className="sauce-card block p-4">
@@ -231,7 +231,7 @@ export function OrderDetailScreen({ id }: { id: string }) {
     return (
       <div>
         <BackBar title="Order" />
-        <p className="px-4 text-sm text-ash">We couldn't find that order on this device.</p>
+        <p className="px-4 pt-6 text-sm text-ash">We couldn't find that order on this device.</p>
       </div>
     );
   }
@@ -240,33 +240,36 @@ export function OrderDetailScreen({ id }: { id: string }) {
 
 function OrderBody({ order }: { order: Order }) {
   const active = FLOW.indexOf(order.status);
+  const place = formatAddress(order.address);
   return (
     <div>
       <BackBar title={order.number} />
-      <ol className="mx-4 mb-4 grid grid-cols-4 gap-1">
+      <ol className="grid grid-cols-4 border-b border-white/10" aria-label="Order progress">
         {FLOW.map((status, index) => (
-          <li key={status} className="text-center">
-            <span className={`mx-auto block h-2 rounded-full ${index <= active ? "nav-glow" : "bg-smoke"}`} />
-            <span className="mt-1 block text-[10px] capitalize text-ash">{status}</span>
+          <li key={status} className="relative flex h-11 items-center justify-center">
+            <span className={`truncate text-[13px] font-semibold capitalize ${index === active ? "text-flame" : index < active ? "text-cream" : "text-ash"}`}>{status}</span>
+            <span className={`absolute inset-x-3 bottom-0 h-0.5 rounded-full ${index <= active ? "bg-flame" : ""}`} />
           </li>
         ))}
       </ol>
-      <ul className="space-y-3 px-4">
+      <div className="space-y-3 px-4 pb-8 pt-4">
+      <ul className="space-y-3">
         {order.items.map((item) => (
-          <li key={item.handle} className="flex gap-3">
-            <SauceImage src={item.image} alt={item.title} width={200} className="h-16 w-16 rounded-2xl" />
-            <div className="min-w-0">
-              <p className="line-clamp-2 text-sm">{item.title}</p>
-              <p className="text-xs text-ash">Qty {item.qty}</p>
+          <li key={item.handle} className="flex items-center gap-3 rounded-[20px] bg-char p-3">
+            <SauceImage src={item.image} alt={item.title} width={200} className="h-16 w-16 shrink-0 rounded-2xl" />
+            <div className="min-w-0 flex-1">
+              <p className="line-clamp-2 text-sm leading-snug">{item.title}</p>
+              <p className="mt-1 text-xs text-ash">Qty {item.qty}</p>
             </div>
           </li>
         ))}
       </ul>
-      <div className="mx-4 mt-4 rounded-[20px] bg-char p-4 text-sm">
-        <p>{order.address.name}</p>
-        <p className="text-ash">{order.address.line1}, {order.address.city} {order.address.state} {order.address.zip}</p>
-        <p className="mt-2 text-ash">{order.shippingLabel}</p>
-        <p className="mt-2 font-semibold text-flame">{money(order.total)}</p>
+      <div className="space-y-2 rounded-[20px] bg-char p-4 text-sm">
+        {order.address.name && <p className="font-semibold text-cream">{order.address.name}</p>}
+        {place && <p className="text-ash">{place}</p>}
+        {order.shippingLabel && <p className="text-ash">{order.shippingLabel}</p>}
+        <p className="font-semibold text-flame">{money(order.total)}</p>
+      </div>
       </div>
     </div>
   );
@@ -277,14 +280,14 @@ export function AddressesScreen() {
   const [form, setForm] = useState<Address>({ id: "", name: "", email: "", phone: "", line1: "", line2: "", city: "", state: "CA", zip: "", country: "United States" });
   if (!hydrated) return <div className="shimmer m-4 h-40 rounded-[20px]" />;
   return (
-    <div className="px-4 pb-8">
+    <div className="pb-8">
       <BackBar title="Addresses" />
-      <ul className="space-y-2">
+      <ul className="space-y-3 px-4 pt-4">
         {addresses.map((address) => (
-          <li key={address.id} className="rounded-[20px] bg-char p-3 text-sm">
+          <li key={address.id} className="rounded-[20px] bg-char p-4 text-sm">
             <p className="font-semibold">{address.name}</p>
-            <p className="text-ash">{address.line1}, {address.city} {address.state} {address.zip}</p>
-            <button type="button" onClick={() => removeAddress(address.id)} className="mt-2 text-xs text-fire">
+            <p className="mt-1 text-ash">{formatAddress(address) || "No street saved"}</p>
+            <button type="button" onClick={() => removeAddress(address.id)} className="press mt-1 inline-flex h-11 items-center text-sm font-semibold text-fire">
               Remove
             </button>
           </li>
@@ -292,7 +295,7 @@ export function AddressesScreen() {
         {addresses.length === 0 && <p className="text-sm text-ash">No saved addresses yet.</p>}
       </ul>
       <form
-        className="mt-4 space-y-2"
+        className="mt-4 space-y-2 px-4"
         onSubmit={(event) => {
           event.preventDefault();
           if (!form.name || !form.line1 || !form.city || !form.zip) return;
@@ -304,7 +307,7 @@ export function AddressesScreen() {
         <input aria-label="Street" placeholder="Street" value={form.line1} onChange={(event) => setForm({ ...form, line1: event.target.value })} className="field" />
         <input aria-label="City" placeholder="City" value={form.city} onChange={(event) => setForm({ ...form, city: event.target.value })} className="field" />
         <input aria-label="ZIP" placeholder="ZIP" value={form.zip} onChange={(event) => setForm({ ...form, zip: event.target.value })} className="field" />
-        <FireButton type="submit">Save Address</FireButton>
+        <FireButton className="!mt-8" type="submit">Save Address</FireButton>
       </form>
     </div>
   );

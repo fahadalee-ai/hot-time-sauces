@@ -1,0 +1,4 @@
+2026/10/02-02:13:28.282 4ab4 Reusing MANIFEST E:\MyProjects\hot-time-sauces\.chrome-check\profile-hit\Default\Local Storage\leveldb/MANIFEST-000001
+2026/10/02-02:13:28.285 4ab4 Recovering log #3
+2026/10/02-02:13:28.285 4ab4 (ignoring error) E:\MyProjects\hot-time-sauces\.chrome-check\profile-hit\Default\Local Storage\leveldb/000003.log: dropping 481 bytes; Corruption: checksum mismatch
+2026/10/02-02:13:28.288 4ab4 Reusing old log E:\MyProjects\hot-time-sauces\.chrome-check\profile-hit\Default\Local Storage\leveldb/000003.log 

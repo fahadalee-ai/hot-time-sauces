@@ -3,7 +3,7 @@ import { Mail, RotateCcw, Search, ShieldCheck, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 import logo from "@/img/logo.png";
 import flame from "@/img/generated/flame-texture.webp";
-import { CartButton, SectionTitle, Stars } from "@/components/Chrome";
+import { CartButton, SectionTitle, ShippingNotice, Stars } from "@/components/Chrome";
 import { ProductCard } from "@/components/ProductCard";
 import { HEAT_CARDS, HOME_CHIPS, PEPPER_TILES } from "@/data/navigation";
 import { FREE_SHIPPING_THRESHOLD, RETURN_DAYS, SUPPORT_EMAIL } from "@/data/config";
@@ -61,9 +61,9 @@ export function HomeScreen() {
         <CartButton />
       </header>
 
-      <p className="mx-4 mb-3 rounded-2xl bg-gradient-to-r from-fire/90 to-flame px-3 py-2 text-center text-[11px] font-semibold leading-snug text-white">
-        {site.announcement}
-      </p>
+      <div className="mb-3">
+        <ShippingNotice />
+      </div>
 
       <div className="px-4">
         <button
@@ -89,9 +89,11 @@ export function HomeScreen() {
             <p className="font-display text-5xl text-white" style={{ textShadow: "0 2px 12px rgba(0,0,0,0.8)" }}>{slide.title}</p>
           </div>
         </button>
-        <div className="mt-2 flex justify-center gap-1.5">
+        <div className="flex justify-center">
           {HEROES.map((item, index) => (
-            <button key={item.title} type="button" aria-label={`Show ${item.title}`} onClick={() => setHero(index)} className={`h-2 rounded-full ${index === hero ? "nav-glow w-7" : "w-2 bg-smoke"}`} />
+            <button key={item.title} type="button" aria-label={`Show ${item.title}`} aria-current={index === hero ? "true" : undefined} onClick={() => setHero(index)} className="grid h-11 w-11 place-items-center">
+              <span className={`block h-2 rounded-full ${index === hero ? "nav-glow w-7" : "w-2 bg-smoke"}`} />
+            </button>
           ))}
         </div>
       </div>
@@ -119,7 +121,7 @@ export function HomeScreen() {
             key={chip.handle}
             type="button"
             onClick={() => navigate({ to: "/c/$handle", params: { handle: chip.handle } })}
-            className="press shrink-0 rounded-full border border-smoke bg-char px-4 py-2 text-sm font-medium text-cream"
+            className="capsule press shrink-0 border border-smoke bg-char text-cream"
           >
             {chip.label}
           </button>
@@ -132,7 +134,7 @@ export function HomeScreen() {
         <SectionTitle
           title="Best Sellers"
           action={
-            <Link to="/c/$handle" params={{ handle: "best-sellers" }} className="text-sm font-semibold text-flame">
+            <Link to="/c/$handle" params={{ handle: "best-sellers" }} className="inline-flex h-11 items-center px-2 text-sm font-semibold text-flame">
               See all
             </Link>
           }
@@ -158,7 +160,7 @@ export function HomeScreen() {
         <SectionTitle
           title="Newest Items"
           action={
-            <Link to="/c/$handle" params={{ handle: "recently-added" }} className="text-sm font-semibold text-flame">
+            <Link to="/c/$handle" params={{ handle: "recently-added" }} className="inline-flex h-11 items-center px-2 text-sm font-semibold text-flame">
               See all
             </Link>
           }
@@ -187,7 +189,7 @@ export function HomeScreen() {
         <SectionTitle
           title="Package Deals"
           action={
-            <button type="button" className="text-sm font-semibold text-flame" onClick={() => navigate({ to: "/c/$handle", params: { handle: "on-sale" } })}>
+            <button type="button" className="inline-flex h-11 items-center px-2 text-sm font-semibold text-flame" onClick={() => navigate({ to: "/c/$handle", params: { handle: "on-sale" } })}>
               All sale
             </button>
           }

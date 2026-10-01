@@ -12,7 +12,7 @@ function Article({ title, text, href }: { title: string; text: string; href?: st
   return (
     <div>
       <BackBar title={title} />
-      <article className="space-y-3 px-4 pb-8 text-sm leading-relaxed text-ash">
+      <article className="space-y-3 px-4 pb-8 pt-4 text-sm leading-relaxed text-ash">
         {blocks.length === 0 ? <p>We couldn't load this page from the store. Open it on the website.</p> : blocks.map((block) => <p key={block.slice(0, 40)}>{block}</p>)}
         {href && (
           <a href={href} className="inline-block font-semibold text-flame" target="_blank" rel="noreferrer">
@@ -40,7 +40,7 @@ export function FaqScreen() {
   return (
     <div>
       <BackBar title="Help / FAQ" />
-      <div className="space-y-2 px-4 pb-8">
+      <div className="space-y-3 px-4 pb-8 pt-4">
         {site.faq.length === 0 && <p className="text-sm text-ash">FAQ didn't load. Email {SUPPORT_EMAIL}.</p>}
         {site.faq.map((item) => (
           <details key={item.q} className="rounded-[20px] bg-char px-4 py-3">
@@ -62,7 +62,7 @@ export function ContactScreen() {
   return (
     <div>
       <BackBar title="Contact" />
-      <div className="space-y-3 px-4 pb-8 text-sm text-ash">
+      <div className="space-y-3 px-4 pb-8 pt-4 text-sm text-ash">
         <p>{site.contact || `You can contact us anytime at ${CONTACT_EMAIL} or call ${SUPPORT_PHONE}.`}</p>
         <p>
           Support desk: <a className="text-flame" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
@@ -90,7 +90,7 @@ export function ContactScreen() {
             <input required aria-label="Your name" placeholder="Your name" className="field" />
             <input required type="email" aria-label="Your email" placeholder="Your email" className="field" />
             <textarea required aria-label="Message" placeholder="Message" className="field h-28 py-3" />
-            <FireButton type="submit">Send</FireButton>
+            <FireButton className="!mt-8" type="submit">Send</FireButton>
           </form>
         )}
       </div>
@@ -102,7 +102,7 @@ export function ShuScreen() {
   return (
     <div>
       <BackBar title="Pepper SHU" />
-      <div className="space-y-4 px-4 pb-8">
+      <div className="space-y-4 px-4 pb-8 pt-4">
         <p className="text-sm leading-relaxed text-ash">
           Scoville Heat Units from the Hot Time Sauces pepper guide. The charts below are the images published on the store.
         </p>
@@ -122,7 +122,7 @@ export function BlogScreen() {
   return (
     <div>
       <BackBar title="Sauce Blog" />
-      <div className="space-y-3 px-4 pb-8">
+      <div className="space-y-3 px-4 pb-8 pt-4">
         {site.articles.length === 0 ? (
           <p className="text-sm leading-relaxed text-ash">
             The public article feed didn't return posts this time. The Sauce Blog still lives on the store.
@@ -152,7 +152,9 @@ export function BrandsScreen() {
   return (
     <div>
       <BackBar title="Brands" />
-      <input aria-label="Filter brands" value={q} onChange={(event) => setQ(event.target.value)} placeholder="Find a brand" className="field mx-4 mb-3 w-[calc(100%-2rem)]" />
+      <div className="px-4 pt-4">
+        <input aria-label="Filter brands" value={q} onChange={(event) => setQ(event.target.value)} placeholder="Find a brand" className="field mb-3" />
+      </div>
       <ul>
         {brands.map((brand) => (
           <li key={brand.name}>
@@ -172,12 +174,12 @@ export function GiftsScreen() {
   return (
     <div>
       <BackBar title="E-Gift Cards" />
-      <div className="grid grid-cols-2 gap-3 px-4">
+      <div className="grid grid-cols-2 gap-3 px-4 pb-6 pt-4">
         {cards.map((product) => (
           <ProductCard key={product.handle} product={product} />
         ))}
       </div>
-      {cards.length === 0 && <p className="px-4 text-sm text-ash">Gift cards aren't in the catalog right now.</p>}
+      {cards.length === 0 && <p className="px-4 pt-6 text-sm text-ash">Gift cards aren't in the catalog right now.</p>}
     </div>
   );
 }
@@ -187,7 +189,7 @@ export function PepperWeekScreen() {
   return (
     <div>
       <BackBar title="Pepper of the Week" />
-      <div className="px-4 pb-6">
+      <div className="px-4 pb-6 pt-4">
         <p className="text-sm leading-relaxed text-ash">
           Hot Time Sauces features a pepper on the website. This build didn't find a separate Pepper of the Week collection in the menu, so here are the newest sauces while you check the blog.
         </p>

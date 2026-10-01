@@ -18,8 +18,8 @@ export function WishlistScreen() {
 
   return (
     <div>
-      <header className="px-4 pb-3 pt-[max(0.9rem,env(safe-area-inset-top))]">
-        <h1 className="font-display text-4xl">Wishlist</h1>
+      <header className="px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))]">
+        <h1 className="font-display text-4xl leading-none">Wishlist</h1>
       </header>
       {items.length === 0 ? (
         <EmptyState
@@ -33,7 +33,7 @@ export function WishlistScreen() {
           }
         />
       ) : (
-        <div className="grid grid-cols-2 gap-3 px-4 pb-6">
+        <div className="grid grid-cols-2 gap-4 px-4">
           {items.map((product) => (
             <article key={product.handle} className="sauce-card p-2">
               <Link to="/p/$handle" params={{ handle: product.handle }}>
@@ -78,8 +78,8 @@ export function CartScreen() {
 
   return (
     <div>
-      <header className="px-4 pb-2 pt-[max(0.9rem,env(safe-area-inset-top))]">
-        <h1 className="font-display text-4xl">Cart</h1>
+      <header className="px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))]">
+        <h1 className="font-display text-4xl leading-none">Cart</h1>
       </header>
       {lines.length === 0 ? (
         <EmptyState
@@ -93,14 +93,14 @@ export function CartScreen() {
           }
         />
       ) : (
-        <div className="px-4 pb-6">
-          <ul className="space-y-3">
+        <div className="px-4">
+          <ul className="space-y-4">
             {lines.map((row) => (
               <CartRow key={row.line.id} title={row.product.title} image={row.product.images[0]} variant={row.variant?.title} qty={row.line.qty} price={row.price * row.line.qty} onQty={(qty) => setQty(row.line.id, qty)} onRemove={() => removeLine(row.line.id)} />
             ))}
           </ul>
           <form
-            className="mt-4 flex gap-2"
+            className="mt-6 flex gap-3"
             onSubmit={(event) => {
               event.preventDefault();
               if (!code.trim()) clearPromo();
@@ -112,24 +112,24 @@ export function CartScreen() {
               Apply
             </button>
           </form>
-          <p className="mt-1 text-[11px] text-ash">Demo codes: HEAT10 (10% off) or FIRE5 ($5 off). Percentage codes turn off free shipping, same as the store.</p>
+          <p className="mt-2 text-[13px] leading-5 text-ash">Demo codes: HEAT10 (10% off) or FIRE5 ($5 off). Percentage codes turn off free shipping, same as the store.</p>
           {promoError && <p className="mt-1 text-xs text-fire">{promoError}</p>}
-          <div className="mt-4 rounded-[20px] border border-smoke bg-char p-3">
-            <p className="text-sm">{onlyBundles ? "Package deals ship at the flat rate." : quote.free ? "You've unlocked FREE shipping." : `Add ${money(remaining)} more for FREE shipping`}</p>
+          <div className="mt-6 rounded-[20px] border border-smoke bg-char p-4">
+            <p className="text-[15px] leading-snug">{onlyBundles ? "Package deals ship at the flat rate." : quote.free ? "You've unlocked FREE shipping." : `Add ${money(remaining)} more for FREE shipping`}</p>
             {!onlyBundles && (
               <div className="progress-fire mt-2">
                 <span style={{ width: `${progress * 100}%` }} />
               </div>
             )}
           </div>
-          <dl className="mt-4 space-y-2 text-sm">
+          <dl className="mt-6 space-y-3 text-[15px]">
             <Row label="Subtotal" value={money(subtotal)} />
             {discount > 0 && <Row label="Promo" value={`−${money(discount)}`} />}
             <Row label="Shipping" value={quote.free ? "FREE" : money(quote.cost)} />
             <Row label="Taxes" value="Calculated at checkout" />
             <Row label="Total" value={money(subtotal - discount + quote.cost)} strong />
           </dl>
-          <div className="mt-4">
+          <div className="mt-6">
             <FireButton onClick={() => navigate({ to: "/checkout" })}>Proceed to Checkout</FireButton>
           </div>
         </div>
@@ -140,7 +140,7 @@ export function CartScreen() {
 
 function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
   return (
-    <div className={`flex justify-between ${strong ? "text-base font-semibold text-cream" : "text-ash"}`}>
+    <div className={`flex items-center justify-between ${strong ? "border-t border-white/10 pt-3 text-[17px] font-semibold text-cream" : "text-ash"}`}>
       <dt>{label}</dt>
       <dd className={strong ? "text-flame" : "text-cream"}>{value}</dd>
     </div>
@@ -172,7 +172,7 @@ function CartRow({
         Remove
       </button>
       <div
-        className="relative flex gap-3 bg-char p-3"
+        className="relative flex gap-4 bg-char p-4"
         style={{ transform: `translateX(${dx}px)` }}
         onPointerDown={(event) => setStart(event.clientX)}
         onPointerMove={(event) => {
@@ -191,7 +191,7 @@ function CartRow({
       >
         <SauceImage src={image} alt="" width={200} className="h-20 w-20 shrink-0 rounded-2xl" />
         <div className="min-w-0 flex-1">
-          <p className="line-clamp-2 text-sm font-medium">{title}</p>
+          <p className="line-clamp-2 text-[15px] font-medium leading-snug">{title}</p>
           {variant && variant !== "Default Title" && <p className="text-xs text-ash">{variant}</p>}
           <div className="mt-2 flex items-center justify-between">
             <div className="flex items-center rounded-xl border border-smoke">
@@ -203,7 +203,7 @@ function CartRow({
                 +
               </button>
             </div>
-            <p className="font-semibold text-flame">{money(price)}</p>
+            <p className="text-[17px] font-semibold text-flame">{money(price)}</p>
           </div>
         </div>
       </div>
