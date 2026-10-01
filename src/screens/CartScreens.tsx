@@ -19,7 +19,7 @@ export function WishlistScreen() {
   return (
     <div>
       <header className="px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))]">
-        <h1 className="font-display text-4xl leading-none">Wishlist</h1>
+        <h1 className="text-[22px] font-semibold leading-none">Wishlist</h1>
       </header>
       {items.length === 0 ? (
         <EmptyState
@@ -79,7 +79,7 @@ export function CartScreen() {
   return (
     <div>
       <header className="px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))]">
-        <h1 className="font-display text-4xl leading-none">Cart</h1>
+        <h1 className="text-[22px] font-semibold leading-none">Cart</h1>
       </header>
       {lines.length === 0 ? (
         <EmptyState
@@ -194,7 +194,7 @@ function CartRow({
           <p className="line-clamp-2 text-[15px] font-medium leading-snug">{title}</p>
           {variant && variant !== "Default Title" && <p className="text-xs text-ash">{variant}</p>}
           <div className="mt-2 flex items-center justify-between">
-            <div className="flex items-center rounded-xl border border-smoke">
+            <div className="flex items-center rounded-2xl border border-smoke">
               <button type="button" aria-label="Decrease quantity" onClick={() => onQty(qty - 1)} onPointerDown={(event) => event.stopPropagation()} className="grid h-11 w-11 place-items-center">
                 −
               </button>

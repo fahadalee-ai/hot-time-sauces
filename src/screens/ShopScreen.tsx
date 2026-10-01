@@ -44,7 +44,7 @@ function AisleCard({ item, onOpen }: { item: NavItem; onOpen: (item: NavItem) =>
 
 function ThumbRail({ title, items, onOpen }: { title: string; items: NavItem[]; onOpen: (item: NavItem) => void }) {
   return (
-    <section className="mt-7">
+    <section className="mt-6">
       <SectionTitle title={title} />
       <div className="no-scrollbar flex gap-3 overflow-x-auto px-4 pb-1">
         {items.map((item) => (
@@ -61,6 +61,7 @@ function ThumbRail({ title, items, onOpen }: { title: string; items: NavItem[]; 
 export function ShopScreen() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
+  const [more, setMore] = useState(false);
   const needle = query.trim().toLowerCase();
   const openCollection = (item: NavItem) => navigate({ to: "/c/$handle", params: { handle: item.handle } });
   const featured = bestSellers(1)[0];
@@ -84,7 +85,7 @@ export function ShopScreen() {
     <div className="pb-6">
       <header className="px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))]">
         <div className="flex items-center gap-3">
-          <h1 className="font-display flex-1 text-4xl">Shop</h1>
+          <h1 className="flex-1 text-[22px] font-semibold">Shop</h1>
           <CartButton />
         </div>
         <label className="mt-3 flex h-12 items-center gap-2 rounded-2xl border border-smoke bg-char px-3">
@@ -143,7 +144,7 @@ export function ShopScreen() {
             </button>
           )}
 
-          <section className="mt-7">
+          <section className="mt-6">
             <SectionTitle title="Shop by Heat" />
             <div className="grid grid-cols-2 gap-3 px-4">
               {HEAT_CARDS.map((card) => (
@@ -156,7 +157,7 @@ export function ShopScreen() {
                   <div className={card.score === 5 ? "grid grid-cols-[112px_1fr]" : ""}>
                     <SauceImage src={coverFor(card.handle)} alt="" className={card.score === 5 ? "h-full min-h-28" : "aspect-square"} />
                     <div className="p-3">
-                      <p className="font-display text-3xl text-cream">{card.label}</p>
+                      <p className="font-display text-[22px] leading-none text-cream">{card.label}</p>
                       <HeatMeter score={card.score} />
                       <p className="mt-1 text-[13px] text-ash">{shelfCount(card.handle)} sauces</p>
                     </div>
@@ -166,16 +167,7 @@ export function ShopScreen() {
             </div>
           </section>
 
-          <section className="mt-7">
-            <SectionTitle title="Aisles" />
-            <div className="grid grid-cols-2 gap-3 px-4">
-              {AISLES.map((item) => (
-                <AisleCard key={item.handle} item={item} onOpen={openCollection} />
-              ))}
-            </div>
-          </section>
-
-          <section className="mt-7">
+          <section className="mt-6">
             <SectionTitle
               title="Best Sellers"
               action={
@@ -191,42 +183,7 @@ export function ShopScreen() {
             </div>
           </section>
 
-          <section className="mt-7">
-            <SectionTitle
-              title="On Sale"
-              action={
-                <button type="button" className="inline-flex h-11 items-center px-2 text-sm font-semibold text-flame" onClick={() => navigate({ to: "/c/$handle", params: { handle: "on-sale" } })}>
-                  All sale
-                </button>
-              }
-            />
-            <div className="no-scrollbar flex gap-3 overflow-x-auto px-4 pb-1">
-              {deals.map((product) => (
-                <ProductCard key={product.handle} product={product} layout="rail" />
-              ))}
-            </div>
-          </section>
-
-          <ThumbRail title="Shop by Pepper" items={PEPPER_TILES} onOpen={openCollection} />
-          <ThumbRail title="Fruit Infused" items={FRUIT} onOpen={openCollection} />
-          <ThumbRail title="Sauce Styles" items={STYLES} onOpen={openCollection} />
-
-          <section className="mt-7">
-            <SectionTitle title="Dietary" />
-            <div className="grid grid-cols-2 gap-3 px-4">
-              {DIETARY.map((item) => (
-                <button key={item.handle} type="button" onClick={() => openCollection(item)} className="sauce-card press flex items-center gap-3 p-2 text-left">
-                  <SauceImage src={coverFor(item.handle)} alt="" className="h-16 w-16 shrink-0 rounded-2xl" />
-                  <span>
-                    <span className="block font-display text-2xl leading-none text-cream">{item.label}</span>
-                    <span className="mt-1 block text-[13px] text-ash">{shelfCount(item.handle)} sauces</span>
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <section className="mt-7">
+          <section className="mt-6">
             <SectionTitle
               title="Brands"
               action={
@@ -256,7 +213,56 @@ export function ShopScreen() {
             </div>
           </section>
 
-          <section className="mt-7 grid grid-cols-2 gap-3 px-4">
+          <section className="mt-6">
+            <SectionTitle
+              title="On Sale"
+              action={
+                <button type="button" className="inline-flex h-11 items-center px-2 text-sm font-semibold text-flame" onClick={() => navigate({ to: "/c/$handle", params: { handle: "on-sale" } })}>
+                  All sale
+                </button>
+              }
+            />
+            <div className="no-scrollbar flex gap-3 overflow-x-auto px-4 pb-1">
+              {deals.map((product) => (
+                <ProductCard key={product.handle} product={product} layout="rail" />
+              ))}
+            </div>
+          </section>
+
+          <div className="mt-6 px-4">
+            <button type="button" aria-expanded={more} onClick={() => setMore((open) => !open)} className="press flex h-11 w-full items-center justify-center rounded-2xl border border-smoke text-sm font-semibold text-cream">
+              {more ? "Show less" : "More"}
+            </button>
+          </div>
+
+          {more && (
+            <>
+              <section className="mt-6">
+                <SectionTitle title="Aisles" />
+                <div className="grid grid-cols-2 gap-3 px-4">
+                  {AISLES.map((item) => (
+                    <AisleCard key={item.handle} item={item} onOpen={openCollection} />
+                  ))}
+                </div>
+              </section>
+              <ThumbRail title="Shop by Pepper" items={PEPPER_TILES} onOpen={openCollection} />
+              <ThumbRail title="Fruit Infused" items={FRUIT} onOpen={openCollection} />
+              <ThumbRail title="Sauce Styles" items={STYLES} onOpen={openCollection} />
+              <section className="mt-6">
+                <SectionTitle title="Dietary" />
+                <div className="grid grid-cols-2 gap-3 px-4">
+                  {DIETARY.map((item) => (
+                    <button key={item.handle} type="button" onClick={() => openCollection(item)} className="sauce-card press flex items-center gap-3 p-2 text-left">
+                      <SauceImage src={coverFor(item.handle)} alt="" className="h-16 w-16 shrink-0 rounded-2xl" />
+                      <span>
+                        <span className="block font-display text-2xl leading-none text-cream">{item.label}</span>
+                        <span className="mt-1 block text-[13px] text-ash">{shelfCount(item.handle)} sauces</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+              <section className="mt-6 grid grid-cols-2 gap-3 px-4">
             {[
               { label: "Gift Cards", icon: Gift, to: "/gifts" as const },
               { label: "Wishlist", icon: Heart, to: "/wishlist" as const },
@@ -275,7 +281,9 @@ export function ShopScreen() {
                 <span className="font-display text-2xl text-cream">{item.label}</span>
               </button>
             ))}
-          </section>
+              </section>
+            </>
+          )}
         </>
       )}
     </div>

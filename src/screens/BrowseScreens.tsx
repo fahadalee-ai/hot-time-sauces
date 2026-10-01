@@ -57,7 +57,7 @@ function Sheet({ title, onClose, children }: { title: string; onClose: () => voi
     <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/55" role="dialog" aria-modal="true" aria-label={title}>
       <button type="button" aria-label="Close" className="flex-1" onClick={onClose} />
       <div className="max-h-[82%] overflow-y-auto rounded-t-[20px] border border-smoke bg-[#1c1614] px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-2">
-        <div className="mx-auto mb-2 h-1.5 w-9 rounded-full bg-white/25" aria-hidden />
+        <div className="mx-auto mb-2 h-1.5 w-9 rounded-2xl bg-white/25" aria-hidden />
         <div className="mb-3 flex items-center justify-between">
           <h2 className="font-display text-3xl">{title}</h2>
           <button type="button" onClick={onClose} className="press grid h-11 min-w-11 place-items-center text-sm font-semibold text-flame">
@@ -88,10 +88,10 @@ export function ProductListScreen({ handle, brand }: { handle?: string; brand?: 
       <div className="sticky top-14 z-20 flex items-center justify-between gap-3 border-b border-white/10 bg-ember/80 px-4 py-3 backdrop-blur-xl">
         <p className="text-xs text-ash">{results.length} sauces</p>
         <div className="flex gap-2">
-          <button type="button" onClick={() => setSortOpen(true)} className="press h-11 rounded-full border border-smoke px-4 text-sm">
+          <button type="button" onClick={() => setSortOpen(true)} className="press h-11 rounded-2xl border border-smoke px-4 text-sm">
             Sort
           </button>
-          <button type="button" onClick={() => setFilterOpen(true)} className="press flex h-11 items-center gap-1 rounded-full border border-smoke px-4 text-sm">
+          <button type="button" onClick={() => setFilterOpen(true)} className="press flex h-11 items-center gap-1 rounded-2xl border border-smoke px-4 text-sm">
             <SlidersHorizontal className="h-4 w-4" /> Filter
           </button>
         </div>
@@ -159,7 +159,7 @@ function FilterSheet({ filters, onChange, onClose }: { filters: Filters; onChang
         {HEATS.map((heat) => {
           const on = filters.heats.includes(heat);
           return (
-            <button key={heat} type="button" onClick={() => onChange({ ...filters, heats: on ? filters.heats.filter((item) => item !== heat) : [...filters.heats, heat] })} className={`h-11 rounded-full border px-3 text-sm capitalize ${on ? "border-flame text-flame" : "border-smoke"}`}>
+            <button key={heat} type="button" onClick={() => onChange({ ...filters, heats: on ? filters.heats.filter((item) => item !== heat) : [...filters.heats, heat] })} className={`h-11 rounded-2xl border px-3 text-sm capitalize ${on ? "border-flame text-flame" : "border-smoke"}`}>
               {heat.replace("-", " ")}
             </button>
           );
@@ -170,7 +170,7 @@ function FilterSheet({ filters, onChange, onClose }: { filters: Filters; onChang
         {DIET_FILTERS.map((diet) => {
           const on = filters.diets.includes(diet.handle);
           return (
-            <button key={diet.handle} type="button" onClick={() => onChange({ ...filters, diets: on ? filters.diets.filter((item) => item !== diet.handle) : [...filters.diets, diet.handle] })} className={`h-11 rounded-full border px-3 text-sm ${on ? "border-flame text-flame" : "border-smoke"}`}>
+            <button key={diet.handle} type="button" onClick={() => onChange({ ...filters, diets: on ? filters.diets.filter((item) => item !== diet.handle) : [...filters.diets, diet.handle] })} className={`h-11 rounded-2xl border px-3 text-sm ${on ? "border-flame text-flame" : "border-smoke"}`}>
               {diet.label}
             </button>
           );
@@ -197,7 +197,7 @@ export function SearchScreen() {
   return (
     <div>
       <BackBar title="Search" />
-      <label className="mx-4 mt-3 flex h-11 items-center gap-2 rounded-xl border border-smoke bg-char px-3">
+      <label className="mx-4 mt-3 flex h-11 items-center gap-2 rounded-2xl border border-smoke bg-char px-3">
         <Search className="h-4 w-4 text-ash" />
         <input
           autoFocus
@@ -220,7 +220,7 @@ export function SearchScreen() {
           <p className="text-xs uppercase tracking-wide text-ash">Popular</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {POPULAR.map((term) => (
-              <button key={term} type="button" onClick={() => setQ(term)} className="press h-11 rounded-full border border-smoke px-3 text-sm">
+              <button key={term} type="button" onClick={() => setQ(term)} className="press h-11 rounded-2xl border border-smoke px-3 text-sm">
                 {term}
               </button>
             ))}

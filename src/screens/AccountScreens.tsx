@@ -5,7 +5,7 @@ import { FireButton } from "@/components/FireButton";
 import { ActionSheet, BackBar } from "@/components/Chrome";
 import { SauceImage } from "@/components/SauceImage";
 import { SUPPORT_EMAIL, SUPPORT_PHONE } from "@/data/config";
-import { coverFor } from "@/lib/catalog";
+import { coverFor, getProduct } from "@/lib/catalog";
 import { formatAddress, imageUrl, money } from "@/lib/format";
 import { useApp, type Address, type Order } from "@/lib/store";
 
@@ -61,7 +61,7 @@ export function AccountScreen() {
       <div className="relative h-36 overflow-hidden bg-black">
         <img src={imageUrl(coverFor("hot-ones"), 900)} alt="" className="absolute inset-0 h-full w-full object-cover object-[80%_center]" />
         <div className="absolute inset-0 bg-gradient-to-t from-ember via-black/55 to-black/25" />
-        <h1 className="relative px-4 pt-[max(0.9rem,env(safe-area-inset-top))] font-display text-4xl text-white">Profile</h1>
+        <h1 className="relative px-4 pt-[max(1rem,env(safe-area-inset-top))] text-[22px] font-semibold text-white">Profile</h1>
       </div>
 
       <div className="relative z-10 -mt-10 px-4">
@@ -71,12 +71,12 @@ export function AccountScreen() {
               {displayName.slice(0, 1).toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate font-display text-4xl leading-none text-cream">{displayName}</p>
+              <p className="truncate text-[22px] font-semibold leading-tight text-cream">{displayName}</p>
               <p className="mt-1 truncate text-sm text-ash">{user?.email ?? (guest ? "Browsing as a guest" : "Sign in to save your heat")}</p>
               {user?.phone && <p className="truncate text-xs text-ash">{user.phone}</p>}
             </div>
             {user && (
-              <button type="button" aria-label="Edit name" onClick={() => setEditing((open) => !open)} className="press grid h-11 w-11 place-items-center rounded-full bg-black/40 text-flame">
+              <button type="button" aria-label="Edit name" onClick={() => setEditing((open) => !open)} className="press grid h-11 w-11 place-items-center rounded-2xl bg-black/40 text-flame">
                 <Pencil className="h-4 w-4" />
               </button>
             )}
@@ -137,7 +137,7 @@ export function AccountScreen() {
 
       {GROUPS.map((group) => (
         <section key={group.title} className="mt-6">
-          <h2 className="mb-2 px-4 font-display text-2xl text-cream">{group.title}</h2>
+          <h2 className="mb-2 px-4 font-display text-[22px] leading-none text-cream">{group.title}</h2>
           <ul className="mx-4 overflow-hidden rounded-[20px] border border-smoke bg-char">
             {group.items.map((item) => {
               const Icon = item.icon;
@@ -167,7 +167,7 @@ export function AccountScreen() {
       </p>
 
       {(user || guest) && (
-        <div className="px-4 pt-8">
+        <div className="px-4 pt-6">
           <button
             type="button"
             className="press flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-smoke text-sm font-semibold text-cream"
@@ -239,8 +239,25 @@ export function OrderDetailScreen({ id }: { id: string }) {
 }
 
 function OrderBody({ order }: { order: Order }) {
+  const navigate = useNavigate();
+  const { addToCart, pushToast } = useApp();
   const active = FLOW.indexOf(order.status);
   const place = formatAddress(order.address);
+  const buyAgain = () => {
+    let added = 0;
+    for (const item of order.items) {
+      const product = getProduct(item.handle);
+      const variantId = product?.variants[0]?.id;
+      if (!product?.available || !variantId) continue;
+      addToCart(item.handle, variantId, item.qty);
+      added += 1;
+    }
+    if (!added) {
+      pushToast("Those bottles are sold out.");
+      return;
+    }
+    navigate({ to: "/cart" });
+  };
   return (
     <div>
       <BackBar title={order.number} />
@@ -268,8 +285,10 @@ function OrderBody({ order }: { order: Order }) {
         {order.address.name && <p className="font-semibold text-cream">{order.address.name}</p>}
         {place && <p className="text-ash">{place}</p>}
         {order.shippingLabel && <p className="text-ash">{order.shippingLabel}</p>}
+        <p className="text-ash">Tracking starts when the store ships this order.</p>
         <p className="font-semibold text-flame">{money(order.total)}</p>
       </div>
+      <FireButton className="!mt-6" onClick={buyAgain}>Buy again</FireButton>
       </div>
     </div>
   );
@@ -307,7 +326,7 @@ export function AddressesScreen() {
         <input aria-label="Street" placeholder="Street" value={form.line1} onChange={(event) => setForm({ ...form, line1: event.target.value })} className="field" />
         <input aria-label="City" placeholder="City" value={form.city} onChange={(event) => setForm({ ...form, city: event.target.value })} className="field" />
         <input aria-label="ZIP" placeholder="ZIP" value={form.zip} onChange={(event) => setForm({ ...form, zip: event.target.value })} className="field" />
-        <FireButton className="!mt-8" type="submit">Save Address</FireButton>
+        <FireButton className="!mt-6" type="submit">Save Address</FireButton>
       </form>
     </div>
   );

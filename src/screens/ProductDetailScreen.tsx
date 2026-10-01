@@ -103,7 +103,7 @@ export function ProductDetailScreen({ handle }: { handle: string }) {
             <p className="text-xs uppercase tracking-wide text-flame">{product.brand}</p>
             <h1 className="mt-1 font-sans text-xl font-semibold normal-case tracking-normal text-cream">{product.title}</h1>
           </div>
-          <button type="button" aria-label="Share sauce" onClick={() => void share()} className="press grid h-11 w-11 place-items-center rounded-full bg-char">
+          <button type="button" aria-label="Share sauce" onClick={() => void share()} className="press grid h-11 w-11 place-items-center rounded-2xl bg-char">
             <Share2 className="h-4 w-4" />
           </button>
         </div>
@@ -174,7 +174,7 @@ export function ProductDetailScreen({ handle }: { handle: string }) {
       </div>
       {related.length > 0 && (
         <section className="mt-2">
-          <h2 className="font-display px-4 text-3xl">You May Also Like</h2>
+          <h2 className="font-display px-4 text-[22px] leading-none">You May Also Like</h2>
           <div className="no-scrollbar mt-3 flex gap-3 overflow-x-auto px-4">
             {related.map((item) => (
               <ProductCard key={item.handle} product={item} layout="rail" />
@@ -184,7 +184,7 @@ export function ProductDetailScreen({ handle }: { handle: string }) {
       )}
       {heatMates.length > 0 && (
         <section className="mt-6">
-          <h2 className="font-display px-4 text-3xl">Same Heat Level</h2>
+          <h2 className="font-display px-4 text-[22px] leading-none">Same Heat Level</h2>
           <div className="no-scrollbar mt-3 flex gap-3 overflow-x-auto px-4">
             {heatMates.map((item) => (
               <ProductCard key={item.handle} product={item} layout="rail" />

@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import successArt from "@/img/generated/order-success.webp";
 import { FlameBackground } from "@/components/effects";
 import { BackBar } from "@/components/Chrome";
@@ -51,6 +53,7 @@ export function CheckoutScreen() {
   const app = useApp();
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<Draft>(blankDraft);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [placing, setPlacing] = useState(false);
   const [ready, setReady] = useState(false);
@@ -115,7 +118,18 @@ export function CheckoutScreen() {
 
   const setAddress = (patch: Partial<Address>) => setDraft((current) => ({ ...current, address: { ...current.address, ...patch } }));
 
-  const nextAddress = () => setStep(1);
+  const nextAddress = () => {
+    const address = draft.address;
+    const next: Record<string, string> = {};
+    if (address.name.trim().length < 2) next.name = "Enter the full name.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address.email.trim())) next.email = "Enter an email so this order can be found later.";
+    if (address.line1.trim().length < 4) next.line1 = "Enter the street address.";
+    if (address.city.trim().length < 2) next.city = "Enter the city.";
+    if (!/^\d{5}(-\d{4})?$/.test(address.zip.trim())) next.zip = "Enter a 5-digit ZIP.";
+    setErrors(next);
+    if (Object.keys(next).length) return;
+    setStep(1);
+  };
 
   const nextPayment = () => setStep(3);
 
@@ -199,24 +213,17 @@ export function CheckoutScreen() {
               ))}
             </div>
           )}
-          <Input label="Full name" value={draft.address.name} onChange={(name) => setAddress({ name })} />
-          <Input label="Email" value={draft.address.email} onChange={(email) => setAddress({ email })} />
+          <Input label="Full name" value={draft.address.name} error={errors.name} onChange={(name) => setAddress({ name })} />
+          <Input label="Email" value={draft.address.email} error={errors.email} onChange={(email) => setAddress({ email })} />
           <Input label="Phone" value={draft.address.phone} onChange={(phone) => setAddress({ phone })} />
-          <Input label="Address line 1" value={draft.address.line1} onChange={(line1) => setAddress({ line1 })} />
+          <Input label="Address line 1" value={draft.address.line1} error={errors.line1} onChange={(line1) => setAddress({ line1 })} />
           <Input label="Address line 2" value={draft.address.line2} onChange={(line2) => setAddress({ line2 })} />
-          <Input label="City" value={draft.address.city} onChange={(city) => setAddress({ city })} />
-          <label className="block text-xs uppercase tracking-wide text-ash">
-            State
-            <select aria-label="State" value={draft.address.state} onChange={(event) => setAddress({ state: event.target.value })} className="field mt-1">
-              {US_STATES.map((state) => (
-                <option key={state}>{state}</option>
-              ))}
-            </select>
-          </label>
-          <Input label="ZIP" value={draft.address.zip} onChange={(zip) => setAddress({ zip })} />
+          <Input label="City" value={draft.address.city} error={errors.city} onChange={(city) => setAddress({ city })} />
+          <StatePicker value={draft.address.state} onChange={(state) => setAddress({ state })} />
+          <Input label="ZIP" value={draft.address.zip} error={errors.zip} onChange={(zip) => setAddress({ zip })} />
           <label className="block text-xs uppercase tracking-wide text-ash">
             Country
-            <input className="field mt-1" value="United States" readOnly aria-label="Country" />
+            <input className="field mt-2" value="United States" readOnly aria-label="Country" />
           </label>
           <label className="flex min-h-11 items-center gap-3 text-sm">
             <input type="checkbox" checked={draft.saveIt} onChange={(event) => setDraft({ ...draft, saveIt: event.target.checked })} className="h-6 w-6 accent-[#e1261c]" />
@@ -226,7 +233,7 @@ export function CheckoutScreen() {
             <input type="checkbox" checked={draft.sameBilling} onChange={(event) => setDraft({ ...draft, sameBilling: event.target.checked })} className="h-6 w-6 accent-[#ff8900]" />
             Billing address is the same
           </label>
-          <FireButton className="!mt-8" onClick={nextAddress}>Continue</FireButton>
+          <FireButton className="!mt-6" onClick={nextAddress}>Continue</FireButton>
         </div>
       )}
       {step === 1 && (
@@ -246,63 +253,23 @@ export function CheckoutScreen() {
           <p className="text-xs leading-relaxed text-ash">
             Standard 5 oz orders ship free at ${FREE_SHIPPING_THRESHOLD}. Larger bottles use an $80 bar on the website. Package deals do not qualify, and a percent-off code returns shipping to the flat rate.
           </p>
-          <FireButton className="!mt-8" onClick={() => setStep(2)}>Continue</FireButton>
+          <FireButton className="!mt-6" onClick={() => setStep(2)}>Continue</FireButton>
         </div>
       )}
       {step === 2 && (
         <div className="space-y-3">
           {/* TODO: Replace this mock payment form with the Shopify Storefront API Checkout
               (cartCreate → cartBuyerIdentityUpdate → checkoutUrl) so orders are paid on hottimesauces.com. */}
-          <Input label="Name on card" value={draft.cardName} onChange={(cardName) => setDraft({ ...draft, cardName })} />
-          <Input
-            label="Card number"
-            value={draft.cardNumber}
-            onChange={(cardNumber) =>
-              setDraft({
-                ...draft,
-                cardNumber: cardNumber
-                  .replace(/\D/g, "")
-                  .slice(0, 16)
-                  .replace(/(\d{4})(?=\d)/g, "$1 ")
-                  .trim(),
-              })
-            }
-          />
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="Expiry"
-              value={draft.expiry}
-              onChange={(expiry) => {
-                const digits = expiry.replace(/\D/g, "").slice(0, 4);
-                setDraft({ ...draft, expiry: digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits });
-              }}
-            />
-            <Input label="CVV" value={draft.cvv} onChange={(cvv) => setDraft({ ...draft, cvv: cvv.replace(/\D/g, "").slice(0, 4) })} />
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <button type="button" className="press h-12 rounded-2xl border border-smoke text-sm font-semibold" onClick={() => app.pushToast("Apple Pay isn't connected in this demo.")}>
-              Apple Pay
-            </button>
-            <button type="button" className="press h-12 rounded-2xl border border-smoke text-sm font-semibold" onClick={() => app.pushToast("Google Pay isn't connected in this demo.")}>
-              Google Pay
-            </button>
-          </div>
-          <p className="text-xs text-ash">Secure checkout UI only. No card is charged. Visa, Mastercard, Amex, and Discover are shown for the real store.</p>
-          <ul className="grid grid-cols-2 gap-2" aria-label="Cards accepted">
-            {["Visa", "Mastercard", "Amex", "Discover"].map((brand) => (
-              <li key={brand} className="capsule w-full border border-smoke bg-char text-cream">
-                {brand}
-              </li>
-            ))}
-          </ul>
-          <FireButton className="!mt-8" onClick={nextPayment}>Review Order</FireButton>
+          <p className="text-[15px] leading-6 text-cream">Nothing is charged on this phone. Payment happens later on the Hot Time Sauces store.</p>
+          <p className="text-[13px] leading-5 text-ash">Visa, Mastercard, Amex, and Discover are the cards the real store accepts.</p>
+          <FireButton className="!mt-6" onClick={nextPayment}>Review Order</FireButton>
         </div>
       )}
       {step === 3 && (
         <div className="space-y-3 text-sm">
           <Block title="Ship to" body={[draft.address.name, formatAddress(draft.address), draft.address.email].map((part) => part.trim()).filter(Boolean).join("\n")} />
           <Block title="Shipping" body={`${quote.label} · ${quote.cost === 0 ? "FREE" : money(quote.cost)}`} />
-          <Block title="Payment" body={[draft.cardName.trim(), draft.cardNumber.replace(/\D/g, "").slice(-4) ? `•••• ${draft.cardNumber.replace(/\D/g, "").slice(-4)}` : "", draft.sameBilling ? "Billing matches shipping" : "Billing address collected at the store"].filter(Boolean).join("\n")} />
+          <Block title="Payment" body="Demo only. No card is charged." />
           <div className="rounded-[20px] bg-char p-4">
             <Row k="Subtotal" v={money(app.subtotal)} />
             {app.discount > 0 && <Row k="Promo" v={`−${money(app.discount)}`} />}
@@ -310,8 +277,8 @@ export function CheckoutScreen() {
             <Row k="Tax" v="Calculated at checkout" />
             <Row k="Total" v={money(total)} />
           </div>
-          <FireButton className="!mt-8" loading={placing} onClick={() => void place()}>
-            Place Order
+          <FireButton className="!mt-6" loading={placing} onClick={() => void place()}>
+            Place demo order
           </FireButton>
         </div>
       )}
@@ -320,11 +287,81 @@ export function CheckoutScreen() {
   );
 }
 
-function Input({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
+function StatePicker({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [phone, setPhone] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setPhone(document.querySelector(".phone"));
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const selected = document.querySelector("[data-state-selected='true']");
+    selected?.scrollIntoView({ block: "center" });
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const sheet = (
+    <div className="absolute inset-0 z-50 flex flex-col justify-end bg-black/55" role="dialog" aria-modal="true" aria-label="State">
+      <button type="button" aria-label="Close" className="flex-1" onClick={() => setOpen(false)} />
+      <div className="max-h-[70%] overflow-y-auto rounded-t-[20px] border border-smoke bg-[#1c1614] px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2">
+        <div className="mx-auto mb-2 h-1.5 w-9 rounded-full bg-white/25" aria-hidden />
+        <div className="mb-1 flex items-center justify-between">
+          <h2 className="font-display text-3xl">State</h2>
+          <button type="button" onClick={() => setOpen(false)} className="press grid h-11 min-w-11 place-items-center text-sm font-semibold text-flame">
+            Done
+          </button>
+        </div>
+        <ul role="listbox" aria-label="State">
+          {US_STATES.map((state) => {
+            const selected = state === value;
+            return (
+              <li key={state}>
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={selected}
+                  data-state-selected={selected ? "true" : undefined}
+                  onClick={() => {
+                    onChange(state);
+                    setOpen(false);
+                  }}
+                  className={`flex h-11 w-full items-center justify-between border-t border-white/10 text-left text-[17px] normal-case ${selected ? "font-semibold text-flame" : "text-cream"}`}
+                >
+                  {state}
+                  {selected ? "✓" : ""}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+
   return (
-    <label className="block text-xs uppercase tracking-wide text-ash">
+    <div className="block text-xs uppercase tracking-wide text-ash">
+      State
+      <button type="button" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)} className="field mt-2 flex items-center justify-between text-left text-[17px] normal-case text-cream">
+        <span>{value}</span>
+        <ChevronDown className="h-5 w-5 text-ash" />
+      </button>
+      {open && phone ? createPortal(sheet, phone) : null}
+    </div>
+  );
+}
+
+function Input({ label, value, onChange, error }: { label: string; value: string; onChange: (value: string) => void; error?: string }) {
+  return (
+    <label className="block text-[13px] uppercase tracking-wide text-ash">
       {label}
-      <input className="field mt-1 normal-case" value={value} aria-label={label} onChange={(event) => onChange(event.target.value)} />
+      <input className="field mt-2 normal-case" value={value} aria-label={label} onChange={(event) => onChange(event.target.value)} />
+      {error && <span className="mt-2 block normal-case text-[13px] text-fire">{error}</span>}
     </label>
   );
 }

@@ -90,7 +90,7 @@ export function ContactScreen() {
             <input required aria-label="Your name" placeholder="Your name" className="field" />
             <input required type="email" aria-label="Your email" placeholder="Your email" className="field" />
             <textarea required aria-label="Message" placeholder="Message" className="field h-28 py-3" />
-            <FireButton className="!mt-8" type="submit">Send</FireButton>
+            <FireButton className="!mt-6" type="submit">Send</FireButton>
           </form>
         )}
       </div>

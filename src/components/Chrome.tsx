@@ -22,7 +22,7 @@ export function ShippingNotice() {
 export function CartButton() {
   const { cartCount } = useApp();
   return (
-    <Link to="/cart" aria-label={`Cart, ${cartCount} items`} className="cart-beacon press relative grid h-11 w-11 place-items-center rounded-full bg-char">
+    <Link to="/cart" aria-label={`Cart, ${cartCount} items`} className="cart-beacon press relative grid h-11 w-11 place-items-center rounded-2xl bg-char">
       <ShoppingBag className="h-5 w-5" />
       <span id="cart-beacon" className="absolute right-1 top-1 h-2 w-2 rounded-full opacity-0" />
       {cartCount > 0 && (
@@ -43,11 +43,11 @@ export function BackBar({ title, action, onBack }: { title: string; action?: Rea
         aria-label="Back"
         onPointerDown={(event) => event.stopPropagation()}
         onClick={() => (onBack ? onBack() : router.history.back())}
-        className="press relative z-20 ml-1 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-char text-flame"
+        className="press relative z-20 ml-1 grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-char text-flame"
       >
         <ChevronLeft className="h-7 w-7" strokeWidth={2.5} />
       </button>
-      <h1 className="pointer-events-none absolute inset-x-16 truncate text-center font-display text-[1.7rem] leading-none text-cream">{title}</h1>
+      <h1 className="pointer-events-none absolute inset-x-16 truncate text-center text-[17px] font-semibold text-cream">{title}</h1>
       {action && <div className="relative z-10 ml-auto flex items-center">{action}</div>}
     </header>
   );
@@ -88,7 +88,7 @@ export function ActionSheet({
 export function SectionTitle({ title, action }: { title: string; action?: ReactNode }) {
   return (
     <div className="mb-3 flex items-end justify-between gap-3 px-4">
-      <h2 className="font-display text-[1.7rem] text-cream">{title}</h2>
+      <h2 className="font-display text-[22px] leading-none text-cream">{title}</h2>
       {action}
     </div>
   );

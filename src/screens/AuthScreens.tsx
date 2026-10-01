@@ -34,7 +34,7 @@ export function SplashScreen() {
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = setTimeout(() => navigate({ to: "/onboarding" }), reduced ? 500 : 3200);
+    const timer = setTimeout(() => navigate({ to: "/onboarding", replace: true }), reduced ? 500 : 3200);
     return () => clearTimeout(timer);
   }, [navigate]);
 
@@ -67,14 +67,19 @@ export function SplashScreen() {
 
 export function OnboardingScreen() {
   const navigate = useNavigate();
-  const { markOnboarded } = useApp();
+  const { markOnboarded, continueAsGuest } = useApp();
   const [index, setIndex] = useState(0);
   const drag = useRef<{ x: number; y: number } | null>(null);
   const slide = SLIDES[index] ?? SLIDES[0];
 
   const finish = () => {
     markOnboarded();
-    navigate({ to: "/login" });
+    navigate({ to: "/login", replace: true });
+  };
+  const browse = () => {
+    markOnboarded();
+    continueAsGuest();
+    navigate({ to: "/home", replace: true });
   };
   const back = () => setIndex((value) => Math.max(0, value - 1));
 
@@ -98,11 +103,11 @@ export function OnboardingScreen() {
       <img src={slide.image} alt="" className="absolute inset-0 h-full w-full object-cover object-[center_28%]" />
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/15" />
       {index > 0 && (
-        <button type="button" aria-label="Previous screen" onClick={back} className="press absolute left-4 top-[max(1rem,env(safe-area-inset-top))] z-20 grid h-11 w-11 place-items-center rounded-full bg-black/55 text-white">
+        <button type="button" aria-label="Previous screen" onClick={back} className="press absolute left-4 top-[max(1rem,env(safe-area-inset-top))] z-20 grid h-11 w-11 place-items-center rounded-2xl bg-black/55 text-white">
           <ChevronLeft className="h-6 w-6" />
         </button>
       )}
-      <button type="button" onClick={finish} className="capsule press absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-20 bg-black/55 text-white">
+      <button type="button" onClick={browse} className="capsule press absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-20 bg-black/55 text-white">
         Skip
       </button>
       <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-8 pt-28">
@@ -117,10 +122,13 @@ export function OnboardingScreen() {
             <span key={item.title} className={`h-2 rounded-full transition-all ${dot === index ? "nav-glow w-8" : "w-2 bg-white/45"}`} />
           ))}
         </div>
-        <div className="pt-8">
+        <div className="space-y-3 pt-8">
           <FireButton onClick={() => (index === SLIDES.length - 1 ? finish() : setIndex(index + 1))}>
             {index === SLIDES.length - 1 ? "Get Started" : "Next"}
           </FireButton>
+          <button type="button" onClick={browse} className="press flex h-11 w-full items-center justify-center text-sm font-semibold text-white">
+            Continue as Guest
+          </button>
         </div>
       </div>
     </div>
@@ -199,6 +207,16 @@ export function LoginScreen() {
       <img src={logo} alt="Hot Time Sauces" className="mx-auto h-24 w-24 rounded-full object-cover" />
       <h1 className="font-display mt-4 text-center text-5xl">Welcome Back</h1>
       <p className="mt-1 text-center text-sm text-ash">Log in to ignite your cravings.</p>
+      <button
+        type="button"
+        className="press mt-6 flex h-[52px] w-full items-center justify-center rounded-2xl border border-flame text-sm font-bold text-flame"
+        onClick={() => {
+          continueAsGuest();
+          navigate({ to: "/home", replace: true });
+        }}
+      >
+        Continue as Guest
+      </button>
       <form
         className="mt-6 space-y-3"
         onSubmit={(event) => {
@@ -216,7 +234,7 @@ export function LoginScreen() {
             Password reset emails are not connected in this demo. Accounts live on this device — use the password you created here.
           </p>
         )}
-        <FireButton className="!mt-8" type="submit" loading={loading}>
+        <FireButton className="!mt-6" type="submit" loading={loading}>
           Login
         </FireButton>
       </form>
@@ -233,16 +251,6 @@ export function LoginScreen() {
           Apple
         </button>
       </div>
-      <button
-        type="button"
-        className="mt-4 flex h-11 w-full items-center justify-center text-sm font-semibold text-flame"
-        onClick={() => {
-          continueAsGuest();
-          navigate({ to: "/home" });
-        }}
-      >
-        Continue as Guest
-      </button>
       <p className="mt-4 text-center text-sm text-ash">
         New here?{" "}
         <button type="button" className="inline-flex h-11 items-center font-semibold text-flame" onClick={() => navigate({ to: "/register" })}>
@@ -298,7 +306,7 @@ export function RegisterScreen() {
           <input type="checkbox" checked={form.deals} onChange={(event) => set("deals", event.target.checked)} className="h-6 w-6 shrink-0 accent-[#ff8900]" />
           Send me deals and new sauce drops.
         </label>
-        <FireButton className="!mt-8" type="submit" loading={loading}>
+        <FireButton className="!mt-6" type="submit" loading={loading}>
           Create Account
         </FireButton>
       </form>

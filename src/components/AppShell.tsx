@@ -106,14 +106,35 @@ export function AppShell({ children }: { children: ReactNode }) {
     };
   }, [path, router]);
 
+  const scrollMemory = useRef(new Map<string, number>());
+  const navKind = useRef<"PUSH" | "POP" | "REPLACE">("PUSH");
+
   useEffect(() => {
-    const reset = () => {
-      const scroller = phoneRef.current?.querySelector(".phone-scroll");
-      if (scroller instanceof HTMLElement) scroller.scrollTop = 0;
+    const markBack = () => {
+      navKind.current = "POP";
+    };
+    window.addEventListener("popstate", markBack);
+    return () => window.removeEventListener("popstate", markBack);
+  }, []);
+
+  useEffect(() => {
+    const scroller = phoneRef.current?.querySelector(".phone-scroll");
+    if (!(scroller instanceof HTMLElement)) return;
+    const remember = () => scrollMemory.current.set(path, scroller.scrollTop);
+    scroller.addEventListener("scroll", remember, { passive: true });
+    return () => scroller.removeEventListener("scroll", remember);
+  }, [path]);
+
+  useEffect(() => {
+    const restore = navKind.current === "POP" ? (scrollMemory.current.get(path) ?? 0) : 0;
+    const apply = () => {
+      const node = phoneRef.current?.querySelector(".phone-scroll");
+      if (node instanceof HTMLElement) node.scrollTop = restore;
       window.scrollTo(0, 0);
     };
-    reset();
-    const frame = requestAnimationFrame(reset);
+    apply();
+    navKind.current = "PUSH";
+    const frame = requestAnimationFrame(apply);
     return () => cancelAnimationFrame(frame);
   }, [path]);
 

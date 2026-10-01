@@ -28,30 +28,30 @@ export function ProductCard({ product, layout = "grid" }: { product: Product; la
           aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
           aria-pressed={saved}
           onClick={() => toggleWish(product.handle)}
-          className="press absolute right-2 top-2 grid h-11 w-11 place-items-center rounded-full bg-black/55"
+          className="press absolute right-2 top-2 grid h-11 w-11 place-items-center rounded-2xl bg-black/55"
         >
           <Heart className="h-5 w-5" fill={saved ? "#e1261c" : "none"} color={saved ? "#e1261c" : "#FFF4E8"} />
         </button>
       </div>
-      <div className="flex flex-1 flex-col gap-1 p-3">
-        <p className="truncate text-[11px] uppercase tracking-wide text-ash">{product.brand}</p>
-        <Link to="/p/$handle" params={{ handle: product.handle }} className="line-clamp-2 text-[13px] font-medium leading-snug text-cream">
+      <div className="flex flex-1 flex-col gap-1.5 p-4">
+        <p className="truncate text-[13px] uppercase tracking-wide text-ash">{product.brand}</p>
+        <Link to="/p/$handle" params={{ handle: product.handle }} className="line-clamp-2 text-[15px] font-medium leading-snug text-cream">
           {product.title}
         </Link>
-        {product.heatScore > 0 ? (
-          <HeatMeter score={product.heatScore} />
-        ) : (
-          <span className="w-fit rounded-full bg-[#2A211E] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-flame">
-            {flavor}
-          </span>
-        )}
-        <div className="mt-auto flex items-end justify-between gap-2 pt-1">
+        <div className="mt-1 flex items-center justify-between gap-2">
+          {product.heatScore > 0 ? (
+            <HeatMeter score={product.heatScore} />
+          ) : (
+            <span className="rounded-2xl bg-[#2A211E] px-2 py-1 text-[13px] font-semibold text-flame">{flavor}</span>
+          )}
+          <p className="text-[17px] font-semibold leading-tight text-flame">{money(product.price)}</p>
+        </div>
+        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
           <div>
-            <p className="text-sm font-semibold text-flame">{money(product.price)}</p>
             {product.compareAtPrice != null && (
-              <p className="text-[11px] text-ash line-through">{money(product.compareAtPrice)}</p>
+              <p className="text-[13px] text-ash line-through">{money(product.compareAtPrice)}</p>
             )}
-            {save > 0 && <p className="text-[10px] font-semibold text-fire">Save {money(save)}</p>}
+            {save > 0 && <p className="text-[13px] font-semibold text-fire">Save {money(save)}</p>}
           </div>
           <button
             type="button"
