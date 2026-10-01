@@ -10,33 +10,388 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as BrandsRouteImport } from './routes/brands'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as GiftsRouteImport } from './routes/gifts'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PepperWeekRouteImport } from './routes/pepper-week'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ReturnsRouteImport } from './routes/returns'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as ShopRouteImport } from './routes/shop'
+import { Route as ShuRouteImport } from './routes/shu'
+import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as AccountIndexRouteImport } from './routes/account/index'
+import { Route as AccountAddressesRouteImport } from './routes/account/addresses'
+import { Route as BrandNameRouteImport } from './routes/brand/$name'
+import { Route as CHandleRouteImport } from './routes/c/$handle'
+import { Route as OrderIdRouteImport } from './routes/order/$id'
+import { Route as PHandleRouteImport } from './routes/p/$handle'
+import { Route as AccountOrdersIndexRouteImport } from './routes/account/orders/index'
+import { Route as AccountOrdersIdRouteImport } from './routes/account/orders/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrandsRoute = BrandsRouteImport.update({
+  id: '/brands',
+  path: '/brands',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GiftsRoute = GiftsRouteImport.update({
+  id: '/gifts',
+  path: '/gifts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PepperWeekRoute = PepperWeekRouteImport.update({
+  id: '/pepper-week',
+  path: '/pepper-week',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReturnsRoute = ReturnsRouteImport.update({
+  id: '/returns',
+  path: '/returns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShuRoute = ShuRouteImport.update({
+  id: '/shu',
+  path: '/shu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/account/',
+  path: '/account/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountAddressesRoute = AccountAddressesRouteImport.update({
+  id: '/account/addresses',
+  path: '/account/addresses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrandNameRoute = BrandNameRouteImport.update({
+  id: '/brand/$name',
+  path: '/brand/$name',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CHandleRoute = CHandleRouteImport.update({
+  id: '/c/$handle',
+  path: '/c/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderIdRoute = OrderIdRouteImport.update({
+  id: '/order/$id',
+  path: '/order/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PHandleRoute = PHandleRouteImport.update({
+  id: '/p/$handle',
+  path: '/p/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountOrdersIndexRoute = AccountOrdersIndexRouteImport.update({
+  id: '/account/orders/',
+  path: '/account/orders/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountOrdersIdRoute = AccountOrdersIdRouteImport.update({
+  id: '/account/orders/$id',
+  path: '/account/orders/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
+  '/brands': typeof BrandsRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
+  '/gifts': typeof GiftsRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/pepper-week': typeof PepperWeekRoute
+  '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/returns': typeof ReturnsRoute
+  '/search': typeof SearchRoute
+  '/shop': typeof ShopRoute
+  '/shu': typeof ShuRoute
+  '/wishlist': typeof WishlistRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/brand/$name': typeof BrandNameRoute
+  '/c/$handle': typeof CHandleRoute
+  '/order/$id': typeof OrderIdRoute
+  '/p/$handle': typeof PHandleRoute
+  '/account/': typeof AccountIndexRoute
+  '/account/orders/$id': typeof AccountOrdersIdRoute
+  '/account/orders/': typeof AccountOrdersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
+  '/brands': typeof BrandsRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
+  '/gifts': typeof GiftsRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/pepper-week': typeof PepperWeekRoute
+  '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/returns': typeof ReturnsRoute
+  '/search': typeof SearchRoute
+  '/shop': typeof ShopRoute
+  '/shu': typeof ShuRoute
+  '/wishlist': typeof WishlistRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/brand/$name': typeof BrandNameRoute
+  '/c/$handle': typeof CHandleRoute
+  '/order/$id': typeof OrderIdRoute
+  '/p/$handle': typeof PHandleRoute
+  '/account': typeof AccountIndexRoute
+  '/account/orders/$id': typeof AccountOrdersIdRoute
+  '/account/orders': typeof AccountOrdersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
+  '/brands': typeof BrandsRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
+  '/gifts': typeof GiftsRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/pepper-week': typeof PepperWeekRoute
+  '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/returns': typeof ReturnsRoute
+  '/search': typeof SearchRoute
+  '/shop': typeof ShopRoute
+  '/shu': typeof ShuRoute
+  '/wishlist': typeof WishlistRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/brand/$name': typeof BrandNameRoute
+  '/c/$handle': typeof CHandleRoute
+  '/order/$id': typeof OrderIdRoute
+  '/p/$handle': typeof PHandleRoute
+  '/account/': typeof AccountIndexRoute
+  '/account/orders/$id': typeof AccountOrdersIdRoute
+  '/account/orders/': typeof AccountOrdersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/brands'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/faq'
+    | '/gifts'
+    | '/home'
+    | '/login'
+    | '/onboarding'
+    | '/pepper-week'
+    | '/privacy'
+    | '/register'
+    | '/returns'
+    | '/search'
+    | '/shop'
+    | '/shu'
+    | '/wishlist'
+    | '/account/addresses'
+    | '/brand/$name'
+    | '/c/$handle'
+    | '/order/$id'
+    | '/p/$handle'
+    | '/account/'
+    | '/account/orders/$id'
+    | '/account/orders/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/brands'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/faq'
+    | '/gifts'
+    | '/home'
+    | '/login'
+    | '/onboarding'
+    | '/pepper-week'
+    | '/privacy'
+    | '/register'
+    | '/returns'
+    | '/search'
+    | '/shop'
+    | '/shu'
+    | '/wishlist'
+    | '/account/addresses'
+    | '/brand/$name'
+    | '/c/$handle'
+    | '/order/$id'
+    | '/p/$handle'
+    | '/account'
+    | '/account/orders/$id'
+    | '/account/orders'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/brands'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/faq'
+    | '/gifts'
+    | '/home'
+    | '/login'
+    | '/onboarding'
+    | '/pepper-week'
+    | '/privacy'
+    | '/register'
+    | '/returns'
+    | '/search'
+    | '/shop'
+    | '/shu'
+    | '/wishlist'
+    | '/account/addresses'
+    | '/brand/$name'
+    | '/c/$handle'
+    | '/order/$id'
+    | '/p/$handle'
+    | '/account/'
+    | '/account/orders/$id'
+    | '/account/orders/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  BlogRoute: typeof BlogRoute
+  BrandsRoute: typeof BrandsRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
+  ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
+  GiftsRoute: typeof GiftsRoute
+  HomeRoute: typeof HomeRoute
+  LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
+  PepperWeekRoute: typeof PepperWeekRoute
+  PrivacyRoute: typeof PrivacyRoute
+  RegisterRoute: typeof RegisterRoute
+  ReturnsRoute: typeof ReturnsRoute
+  SearchRoute: typeof SearchRoute
+  ShopRoute: typeof ShopRoute
+  ShuRoute: typeof ShuRoute
+  WishlistRoute: typeof WishlistRoute
+  AccountAddressesRoute: typeof AccountAddressesRoute
+  BrandNameRoute: typeof BrandNameRoute
+  CHandleRoute: typeof CHandleRoute
+  OrderIdRoute: typeof OrderIdRoute
+  PHandleRoute: typeof PHandleRoute
+  AccountIndexRoute: typeof AccountIndexRoute
+  AccountOrdersIdRoute: typeof AccountOrdersIdRoute
+  AccountOrdersIndexRoute: typeof AccountOrdersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +403,227 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brands': {
+      id: '/brands'
+      path: '/brands'
+      fullPath: '/brands'
+      preLoaderRoute: typeof BrandsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gifts': {
+      id: '/gifts'
+      path: '/gifts'
+      fullPath: '/gifts'
+      preLoaderRoute: typeof GiftsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pepper-week': {
+      id: '/pepper-week'
+      path: '/pepper-week'
+      fullPath: '/pepper-week'
+      preLoaderRoute: typeof PepperWeekRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/returns': {
+      id: '/returns'
+      path: '/returns'
+      fullPath: '/returns'
+      preLoaderRoute: typeof ReturnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shu': {
+      id: '/shu'
+      path: '/shu'
+      fullPath: '/shu'
+      preLoaderRoute: typeof ShuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/': {
+      id: '/account/'
+      path: '/account'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/addresses': {
+      id: '/account/addresses'
+      path: '/account/addresses'
+      fullPath: '/account/addresses'
+      preLoaderRoute: typeof AccountAddressesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brand/$name': {
+      id: '/brand/$name'
+      path: '/brand/$name'
+      fullPath: '/brand/$name'
+      preLoaderRoute: typeof BrandNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/c/$handle': {
+      id: '/c/$handle'
+      path: '/c/$handle'
+      fullPath: '/c/$handle'
+      preLoaderRoute: typeof CHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order/$id': {
+      id: '/order/$id'
+      path: '/order/$id'
+      fullPath: '/order/$id'
+      preLoaderRoute: typeof OrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/p/$handle': {
+      id: '/p/$handle'
+      path: '/p/$handle'
+      fullPath: '/p/$handle'
+      preLoaderRoute: typeof PHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/orders/': {
+      id: '/account/orders/'
+      path: '/account/orders'
+      fullPath: '/account/orders/'
+      preLoaderRoute: typeof AccountOrdersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/orders/$id': {
+      id: '/account/orders/$id'
+      path: '/account/orders/$id'
+      fullPath: '/account/orders/$id'
+      preLoaderRoute: typeof AccountOrdersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  BlogRoute: BlogRoute,
+  BrandsRoute: BrandsRoute,
+  CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
+  ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
+  GiftsRoute: GiftsRoute,
+  HomeRoute: HomeRoute,
+  LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
+  PepperWeekRoute: PepperWeekRoute,
+  PrivacyRoute: PrivacyRoute,
+  RegisterRoute: RegisterRoute,
+  ReturnsRoute: ReturnsRoute,
+  SearchRoute: SearchRoute,
+  ShopRoute: ShopRoute,
+  ShuRoute: ShuRoute,
+  WishlistRoute: WishlistRoute,
+  AccountAddressesRoute: AccountAddressesRoute,
+  BrandNameRoute: BrandNameRoute,
+  CHandleRoute: CHandleRoute,
+  OrderIdRoute: OrderIdRoute,
+  PHandleRoute: PHandleRoute,
+  AccountIndexRoute: AccountIndexRoute,
+  AccountOrdersIdRoute: AccountOrdersIdRoute,
+  AccountOrdersIndexRoute: AccountOrdersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
